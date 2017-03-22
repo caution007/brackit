@@ -1,0 +1,23 @@
+html,
+body {
+    background-color: white;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    padding-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+#wrap {
+    padding: 10px;
+    min-height: -webkit-calc(100% - 100px);     /* Chrome */
+    min-height: -moz-calc(100% - 100px);     /* Firefox */
+    min-height: calc(100% - 100px);     /* native */
+}
+
+/* test.html */
+.input-group-addon { width: 53px; 
+} 
+
+.input-group { width: 100%; }
