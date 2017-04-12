@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
 var bo1Schema = new mongoose.Schema ({
-  matchtId: String,
+  matchId: String,
   partakers: Array,
-  victor: String
+  victor: String,
+}, {
+  versionKey: false
 });
 
 var Bo1 = mongoose.model('Bo1Match', bo1Schema);

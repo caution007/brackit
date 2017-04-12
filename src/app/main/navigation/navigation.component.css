@@ -1,7 +1,16 @@
 a {
     cursor: pointer;
+    color: white;
 }
 
 .navbar {
     background-color: #354759;
 }
+
+.input-group {
+    width: 10px;
+    height: 10px;
+}
+
+
+

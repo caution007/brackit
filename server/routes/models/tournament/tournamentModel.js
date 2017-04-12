@@ -7,13 +7,16 @@ var tournamentSchema = new mongoose.Schema ({
   fixtureSortType: String,
   competitorType: String,
   includeDraws: Boolean,
-  start: String,
+  start: Date,
   matchType: String,
   information: String,
   rules: String,
   started: Boolean,
   complete: Boolean,
-  victor: String
+  victor: String,
+  owner:  String
+}, {
+  versionKey: false
 });
 
 var Tournament = mongoose.model('Tournament', tournamentSchema);

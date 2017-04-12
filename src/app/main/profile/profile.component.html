@@ -1,0 +1,86 @@
+<div id="wrap">
+  <div class="container">
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Account <small>{{_user.nickname}}</small></h1>
+        </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-sm-3 col-md-3">
+        <div class="panel-group" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#profileCollapse"><span class="glyphicon glyphicon-user">
+                  </span>Profile</a>
+              </h4>
+            </div>
+            <div id="profileCollapse" class="panel-collapse collapse">
+              <ul class="list-group">
+                <li class="list-group-item"><span class="glyphicon glyphicon-file text-info"></span><a (click)="setProfileMainComponent()">View</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="setEditProfileComponent()">Edit</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="setGameAccountsComponent()">Game Accounts</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-file text-info"></span><a >Newsletters</a></li>
+              </ul>
+            </div>
+          </div>
+          <!-- /.profile -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#messagesCollapse"><span class="glyphicon glyphicon-comment">
+                  </span>Messages</a>
+              </h4>
+            </div>
+            <div id="messagesCollapse" class="panel-collapse collapse">
+              <div class="list-group">
+                <li class="list-group-item"> <span class="glyphicon glyphicon-comment text-success"></span><a >Inbox</a><span class="badge">42</span></li>
+              </div>
+            </div>
+          </div>
+          <!-- /.messages -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#tournamentsCollapse"><span class="fa fa-trophy fa-3">
+                  </span>Tournaments</a>
+              </h4>
+            </div>
+            <div id="tournamentsCollapse" class="panel-collapse collapse">
+              <div class="list-group">
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="setYourTournamentsComponent()">Your Tournaments</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="setGameAccountsComponent()">Joined Tournaments</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="setCreateTournamentComponent()">Create</a></li>
+              </div>
+            </div>
+          </div>
+          <!-- /.tournaments -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#teamCollapse"><span class="fa fa-users" aria-hidden="true">
+                  </span>Teams</a>
+              </h4>
+            </div>
+            <div id="teamCollapse" class="panel-collapse collapse">
+              <ul class="list-group">
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a >View</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a >Admin</a></li>
+              </ul>
+            </div>
+          </div>
+          <!-- /.profile -->
+        </div>
+      </div>
+      <div class="col-sm-9 col-md-9">
+        <dcl-wrapper [type]="_panel"></dcl-wrapper>
+      </div>
+      <!-- /.mainview -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container -->
+</div>
+<!-- /.wrap -->

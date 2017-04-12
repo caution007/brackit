@@ -1,8 +1,8 @@
 <div id="wrap">
     <div class="container">
-        <div class="row">
+        <div class="row" *ngIf="_tournament">
             <div class="col-lg-12">
-                <div *ngIf="_tournament">
+                <div>
                     <h2 class="page-header">{{_tournament.getName()}}</h2>
                 </div>
             </div>
@@ -24,126 +24,86 @@
                 <div id="tournamentTabs" class="tab-content">
                     <div class="tab-pane fade active in" id="information-tab">
                         <div *ngIf="_tournament">
+                            <h4>Information</h4>
                             <span [innerHTML]="_tournament.getInformation()"></span> 
                         </div>
                     </div>
                     <div class="tab-pane fade" id="rules-tab">
                         <div *ngIf="_tournament">
+                            <h4>Rules</h4>
                             <span [innerHTML]="_tournament.getRules()"></span> 
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="service-two">
-                        <h4>Service Tw</h4>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="panel panel-default text-center">
-                                <div class="panel-heading">
+                    <div class="tab-pane fade" id="service-two" *ngIf="_tournament.getRegistrationType() == 0">
+                        <h4>Teams</h4>
+                        <div class="col-md-3 col-sm-6" *ngFor="let team of _tournament.getTeams()">
+                            <div class="panel panel-default text-center" >
+                                <div class="panel-body"> 
+                                    <div >
+                                        <h4>{{team.name}}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.service if registrattionType is List -->
+                    <div class="tab-pane fade" id="service-two" *ngIf="_tournament.getRegistrationType() == 1">
+                        <h4>Teams</h4>
+                        <div class="col-md-3 col-sm-6" *ngFor="let team of _tournament.getTeams()">
+                            <div class="panel panel-default text-center" >
+                                <div class="panel-heading" >
                                     <span class="fa-stack fa-5x">
                                         <div class="container">
                                             <img class="img-responsive" src="https://hydra-media.cursecdn.com/lol.gamepedia.com/thumb/d/db/Fnaticlogo.png/120px-Fnaticlogo.png?version=7ee621d9b400c17028aa6065104ff99d">
                                         </div>
                                     </span>
                                 </div>
-                                <div class="panel-body">
-                                    <h4>Service One</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                    <a href="#" class="btn btn-primary">Learn More</a>
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">Players</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Mark</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mark</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mark</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mark</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mark</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="panel panel-default text-center">
-                                <div class="panel-heading">
-                                    <span class="fa-stack fa-5x">
-                                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                        <i class="fa fa-tree fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </div>
-                                <div class="panel-body">
-                                    <h4>Service One</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                    <a href="#" class="btn btn-primary">Learn More</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="panel panel-default text-center">
-                                <div class="panel-heading">
-                                    <span class="fa-stack fa-5x">
-                                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                        <i class="fa fa-tree fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </div>
-                                <div class="panel-body">
-                                    <h4>Service One</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                    <a href="#" class="btn btn-primary">Learn More</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="panel panel-default text-center">
-                                <div class="panel-heading">
-                                    <span class="fa-stack fa-5x">
-                                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                        <i class="fa fa-tree fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </div>
-                                <div class="panel-body">
-                                    <h4>Service One</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                    <a href="#" class="btn btn-primary">Learn More</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="panel panel-default text-center">
-                                <div class="panel-heading">
-                                    <span class="fa-stack fa-5x">
-                                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                        <i class="fa fa-tree fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </div>
-                                <div class="panel-body">
-                                    <h4>Service One</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                    <a href="#" class="btn btn-primary">Learn More</a>
+                                <div class="panel-body" *ngIf="_teams">
+                                    <h4>{{_teams[_tournament.getTeams().indexOf(team)].name}}</h4>
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Players <span class="caret"></span></button>
+                                        <ul class="dropdown-menu" *ngFor="let player of _teams[_tournament.getTeams().indexOf(team)].members">
+                                            <li><a href="#"><i><img src="img/flags/_wales.png"></i> {{player.username}}</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- /.service if registrattionType is Signup -->
                     <div class="tab-pane fade" id="service-three">
-                        <h4>Service Three</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae repudiandae fugiat illo cupiditate excepturi esse officiis consectetur, laudantium qui voluptatem. Ad necessitatibus velit, accusantium expedita debitis impedit rerum totam id. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus quibusdam recusandae illum, nesciunt, architecto, saepe facere, voluptas eum incidunt dolores magni itaque autem neque velit in. At quia quaerat asperiores.</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae repudiandae fugiat illo cupiditate excepturi esse officiis consectetur, laudantium qui voluptatem. Ad necessitatibus velit, accusantium expedita debitis impedit rerum totam id. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus quibusdam recusandae illum, nesciunt, architecto, saepe facere, voluptas eum incidunt dolores magni itaque autem neque velit in. At quia quaerat asperiores.</p>
+                        <div class="container">
+                            <h4>League Table</h4>
+                            <p>Some information maybe?</p>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Team</th>
+                                        <th>Played</th>
+                                        <th>Wins</th>
+                                        <th *ngIf="_tournament.getIncludeDraws()">Draws</th>
+                                        <th>Losses</th>
+                                        <th>Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let team of _standings">
+                                    <tr>
+                                        <td>{{_standings.indexOf(team) + 1}}</td>
+                                        <td>{{team.name}}</td>
+                                        <td>{{team.played}}</td>
+                                        <td>{{team.wins}}</td>
+                                        <td *ngIf="_tournament.getIncludeDraws()">{{team.draws}}</td>
+                                        <td>{{team.losses}}</td>
+                                        <td>{{team.points}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="service-four">
-                        <h4>Service Four</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae repudiandae fugiat illo cupiditate excepturi esse officiis consectetur, laudantium qui voluptatem. Ad necessitatibus velit, accusantium expedita debitis impedit rerum totam id. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus quibusdam recusandae illum, nesciunt, architecto, saepe facere, voluptas eum incidunt dolores magni itaque autem neque velit in. At quia quaerat asperiores.</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae repudiandae fugiat illo cupiditate excepturi esse officiis consectetur, laudantium qui voluptatem. Ad necessitatibus velit, accusantium expedita debitis impedit rerum totam id. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus quibusdam recusandae illum, nesciunt, architecto, saepe facere, voluptas eum incidunt dolores magni itaque autem neque velit in. At quia quaerat asperiores.</p>
+                        <h4>Fixtures</h4>
+                        <span *ngIf="!_tournament.started">Tournament has not started yet. Currently no fixtures.</span>
                     </div>
                 </div>
                 <!-- /.table -->

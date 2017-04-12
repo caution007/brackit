@@ -1,0 +1,115 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Create Tournament</h3>
+  </div>
+  <div class="panel-body">
+    <form class="form-horizontal">
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Name</label>
+              <div class="col-md-6">
+                  <input name="nameinput" type="text" [(ngModel)]="_name" class="form-control input-md">
+              </div>
+          </div>
+          <!-- /.name input -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Type</label>
+              <div class="col-md-4">
+                  <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_type">
+                      <option *ngFor="let type of _types">{{type}}</option>
+                  </select>
+              </div>
+          </div>
+          <!-- /.type selector -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Registration Type</label>
+              <div class="col-md-4">
+                  <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_registrationType">
+                      <option *ngFor="let rtype of _registrationTypes">{{rtype}}</option>
+                  </select>
+              </div>
+          </div>
+          <!-- /.registrationType selector -->
+          <div class="form-group" *ngIf="_registrationType === 'List'">
+              <label class="col-md-4 control-label" for="threshold">Teams</label>
+              List all teams or players seperated by commas.
+              <div class="col-md-4">
+                  <textarea class="form-control" name="teamsinput" rows="5" [(ngModel)]="_lstTeams"></textarea>
+              </div>
+          </div>
+          <!-- /.team textarea -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Fixture Type</label>
+              <div class="col-md-4">
+                  <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_fixtureSortType">
+                      <option *ngFor="let fstype of _fixtureSortTypes">{{fstype}}</option>
+                  </select>
+              </div>
+          </div>
+          <!-- /.fixtureType selector -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Competitor Type</label>
+              <div class="col-md-4">
+                  <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_competitorType">
+                      <option *ngFor="let ctype of _competitorTypes">{{ctype}}</option>
+                  </select>
+              </div>
+          </div>
+          <!-- /.competitorType selector -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Include Draws?</label>
+              <div class="col-md-4">
+                  <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_includeDraws">
+                      <option *ngFor="let choice of _yesNoChoices">{{choice[0]}}</option>
+                  </select>
+              </div>
+          </div>
+          <!-- /.includeDraws selector -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Match Type</label>
+              <div class="col-md-4">
+                  <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_matchType">
+                      <option *ngFor="let mtype of _matchTypes">{{mtype}}</option>
+                  </select>
+              </div>
+          </div>
+          <!-- /.includeDraws selector -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Start Date</label>
+              <div class="col-md-6">
+                  <input name="startdateinput" class="form-control" type="date" [(ngModel)]="_startDate">
+              </div>
+          </div>
+          <!-- /.startDate input -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Start Time</label>
+              <div class="col-md-6">
+                  <input name="starttimeinput" class="form-control" type="time" [(ngModel)]="_startTime">
+              </div>
+          </div>
+          <!-- /.startTime input -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Details</label>
+              <div class="col-md-8">
+                  <textarea name="informationinput" class="form-control" rows="5" [(ngModel)]="_information"></textarea>
+              </div>
+          </div>
+          <!-- /.information textarea -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Rules</label>
+              <div class="col-md-8">
+                  <textarea name="rulesinput" class="form-control" rows="5" [(ngModel)]="_rules"></textarea>
+              </div>
+          </div>
+          <!-- /.rules textarea -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" ></label>
+              <div class="col-md-8">
+                  <button id="submitButton" name="submitButton" class="btn btn-success" (click)="test()">Save</button>
+                  <button id="cancel" name="cancel" class="btn btn-inverse" (click)="fixtureTest()">Cancel</button>
+              </div>
+          </div>
+          <span>{{_createMsg}}</span>
+          <!-- /.end buttons -->
+    </form>
+  </div>
+</div>

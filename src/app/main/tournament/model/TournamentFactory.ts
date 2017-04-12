@@ -33,12 +33,13 @@ export class TournamentFactory {
             this._enumConverter.competitorTypeToEnum('' + tournJSON.competitorType),
             tournJSON.includeDraws,
             tournJSON.start,
-            tournJSON.matchType,
+            this._enumConverter.matchTypeToEnum('' + tournJSON.matchType),
             tournJSON.information,
             tournJSON.rules,
             tournJSON.started,
             tournJSON.complete,
             tournJSON.victor,
+            tournJSON.owner,
             tournTypeJSON[0].teams
         );
     }

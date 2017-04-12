@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Router, ActivatedRoute, Params} from '@angular/router';
-
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TournamentService } from './services/tournament.service';
 import { TournamentType } from './model/TournamentType';
+import { RegistrationType } from './model/RegistrationType';
 import { Tournament } from './model/Tournament';
 import { TournamentFactory } from './model/TournamentFactory';
 import { EnumConverter } from '../utilities/EnumConverter';
@@ -19,6 +19,10 @@ export class TournamentComponent implements OnInit {
   private _tournament: Tournament;
   private _tournamentFactory: TournamentFactory;
 
+  private _teams;
+  private _players;
+  private _standings;
+
   constructor(private _tournamentService: TournamentService,
                 private _activatedRoute: ActivatedRoute) { 
     this._tournamentFactory = new TournamentFactory();
@@ -33,6 +37,7 @@ export class TournamentComponent implements OnInit {
     this._tournamentService.getTournament(this._paramID).subscribe(parentTournament => {
       this.getAllTournamentInfo(parentTournament);
     });
+
   }
 
   getAllTournamentInfo(parentTournament) {
@@ -40,6 +45,15 @@ export class TournamentComponent implements OnInit {
     this._tournamentService.getAllTournamentInfo(type, parentTournament._id).subscribe(childTournament => {
       this._tournament = this._tournamentFactory.createTournament(parentTournament, childTournament, type);
       console.log(this._tournament);
+      this._standings = this._tournament.getStandings()
+
+      if(this._tournament.getRegistrationType() == RegistrationType.SIGNUP) {
+        this._tournamentService.getTeamsAndPlayers(this._tournament.getId()).subscribe(teams => {
+          this._teams = teams;
+          console.log(teams);
+        })
+      } 
+
     });
   }
 }

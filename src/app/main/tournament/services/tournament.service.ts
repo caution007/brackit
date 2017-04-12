@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/share';
 
 import { TournamentType } from '../model/TournamentType';
 import { EnumConverter } from '../../utilities/EnumConverter';
@@ -35,8 +36,30 @@ export class TournamentService {
       .map(res => res.json());
   }
 
-  createFixtures(id, teams, type) {
-    return this.http.post(this.url + '/fixtures', {id, teams, type})
+  getYourTournaments(id) {
+    return this.http.get(this.url + '/tournaments/userid/' + id)
+      .map(res => res.json());
+  }
+
+  getTeamsAndPlayers(id) {
+    return this.http.get(this.url + '/tournament/teams/' + id)
+      .map(res => res.json());
+  }
+
+  getPlayers(id) {
+    return this.http.get(this.url + '/tournament/players/' + id)
+      .map(res => res.json());
+  }
+
+  createTournament(tournament) {
+    console.log(tournament);
+    let test = 'test';
+    return this.http.post(this.url + '/tournament', {tournament, test})
+      .map(res => res.json());
+  }
+
+  createFixtures(id, teams, type, mType) {
+    return this.http.post(this.url + '/fixtures', {id, teams, type, mType})
       .map(res => res.json());
   }
 }

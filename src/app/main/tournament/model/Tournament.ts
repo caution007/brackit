@@ -2,6 +2,7 @@ import { TournamentType } from './TournamentType';
 import { RegistrationType } from './RegistrationType';
 import { FixtureSortType } from './FixtureSortType';
 import { CompetitorType } from './CompetitorType';
+import { MatchType } from './MatchType';
 
 export class Tournament {
 
@@ -13,12 +14,13 @@ export class Tournament {
     private _competitorType: CompetitorType;
     private _includeDraws: Boolean;
     private _start: Date;
-    private _matchType: String;
+    private _matchType: MatchType;
     private _information: String;
     private _rules: String;
     private _started: Boolean;
     private _complete: Boolean;
     private _victor: String;
+    private _owner: String;
 
     constructor(id: String,
                 name: String,
@@ -28,12 +30,13 @@ export class Tournament {
                 competitorType: CompetitorType,
                 includeDraws: Boolean,
                 start: Date,
-                matchType: String,
+                matchType: MatchType,
                 information: String,
                 rules: String,
                 started: Boolean,
                 complete: Boolean,
-                victor: String) {
+                victor: String,
+                owner: String) {
 
         this._id = id;
         this._name = name;
@@ -49,8 +52,13 @@ export class Tournament {
         this._started = started;
         this._complete = complete;
         this._victor = victor;
+        this._owner = owner;
     }
     
+    getId() {
+        return this._id;
+    }
+
     getName() {
         return this._name;
     }
@@ -62,4 +70,18 @@ export class Tournament {
     getRules() {
         return this._rules;
     }
+
+    getCompetitorType() {
+        return this._competitorType;
+    }
+
+    getRegistrationType() {
+        return this._registrationType;
+    }
+
+    getIncludeDraws() {
+        return this._includeDraws;
+    }
+
+    getStandings() {}
 }

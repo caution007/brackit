@@ -1,0 +1,50 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Edit Profile</h3>
+  </div>
+  <div class="panel-body" *ngIf="_profile">
+    <div class="col-sm-6 col-md-6">
+      <table>
+        <thead>
+          <th>Personal</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>First Name:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.firstName"></td>
+          </tr>
+          <tr>
+            <td>Family Name:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.familyName" ></td>
+          </tr>
+          <tr>
+            <td>Country:</td>
+            <td><img src="img/flags/_wales.png"> Wales</td>
+          </tr>
+          <button id="submitButton" name="submitButton" class="btn btn-success" (click)="updateProfile()">Edit</button>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-6 col-md-6">
+      <table>
+        <thead>
+          <th>Personal</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>First Name:</td>
+            <td><input class="form-control" type="text" value="Artisanal kale" id="example-text-input"></td>
+          </tr>
+          <tr>
+            <td>Family Name:</td>
+            <td><input class="form-control" type="text" value="Artisanal kale" id="example-text-input"></td>
+          </tr>
+          <tr>
+            <td>Country:</td>
+            <td><img src="img/flags/_wales.png"> Wales</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
