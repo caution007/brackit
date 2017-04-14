@@ -14,7 +14,7 @@ import { ProfileService } from '../services/profile.service';
   templateUrl: './create-tournament.component.html',
   styleUrls: ['./create-tournament.component.css']
 })
-export class CreateTournamentComponent implements OnInit, OnDestroy {
+export class CreateTournamentComponent implements OnInit {
 
   private _user;
   private _profile;
@@ -55,12 +55,6 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
       }
       this._owner = this._profile._id;
     });
-  }
-
-  ngOnDestroy() {
-    if(this._fixtureSub) {
-      this._fixtureSub.unsubscribe();
-    }
   }
 
   createTournament() {

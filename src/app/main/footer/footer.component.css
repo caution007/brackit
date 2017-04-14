@@ -3,7 +3,7 @@
 .footer{
     position: relative;
     clear:both;
-	background-color: #354759;
+	background-color: #2C3E50;
 	box-sizing: border-box;
 	width: 100%;
 	text-align: left;
@@ -67,7 +67,7 @@
 }
 
 .footer .footer-center i{
-	background-color:  #33383b;
+	background-color:  #2C3E50;
 	color: #ffffff;
 	font-size: 25px;
 	width: 38px;

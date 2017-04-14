@@ -8,7 +8,7 @@ declare var Auth0Lock: any;
 @Injectable()
 export class Auth {
   // Configure Auth0
-  private _lock = new Auth0Lock('3Oozr1NYspJYRuuJIUQDFDYsnjnS0OyG', 'iwangb.eu.auth0.com', {});
+  private _lock = new Auth0Lock('3Oozr1NYspJYRuuJIUQDFDYsnjnS0OyG', 'iwangb.eu.auth0.com', {auth: { redirect: false }});
 
   constructor(private _router: Router) {
     // Add callback for lock `authenticated` event

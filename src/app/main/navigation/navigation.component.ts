@@ -14,9 +14,12 @@ export class NavigationComponent implements OnInit {
   private _profile;
 
   constructor(private _auth: Auth, 
-                private _profileService: ProfileService) {}
+                private _profileService: ProfileService,
+                  private _router: Router) {}
 
   ngOnInit() {
     this._profile = JSON.parse(localStorage.getItem('profile'));
   }
+
+
 }

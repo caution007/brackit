@@ -18,16 +18,24 @@ import { TournamentComponent } from './main/tournament/tournament.component';
 import { NotfoundComponent } from './main/notfound/notfound.component';
 import { ProfileComponent } from './main/profile/profile.component';
 import { DclWrapper } from './main/utilities/dclwrapper.component';
-
-// SERVICES //
-import { TournamentService } from './main/tournament/services/tournament.service';
-import { ProfileService } from './main/profile/services/profile.service';
-import { Auth } from './auth/auth.service';
 import { EditProfileComponent } from './main/profile/edit-profile/edit-profile.component';
 import { GameAccountsComponent } from './main/profile/game-accounts/game-accounts.component';
 import { ProfileMainComponent } from './main/profile/profile-main/profile-main.component';
 import { CreateTournamentComponent } from './main/profile/create-tournament/create-tournament.component';
 import { YourTournamentsComponent } from './main/profile/your-tournaments/your-tournaments.component';
+import { TeamComponent } from './main/team/team.component';
+import { CreateTeamComponent } from './main/profile/create-team/create-team.component';
+import { JoinedTournamentsComponent } from './main/profile/joined-tournaments/joined-tournaments.component';
+import { YourTeamsComponent } from './main/profile/your-teams/your-teams.component';
+
+// SERVICES //
+import { TournamentService } from './main/tournament/services/tournament.service';
+import { ProfileService } from './main/profile/services/profile.service';
+import { PanelService } from './main/profile/services/panel.service';
+import { TeamService } from './main/team/services/team.service';
+import { Auth } from './auth/auth.service';
+
+
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp(new AuthConfig({
@@ -52,7 +60,11 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     GameAccountsComponent,
     ProfileMainComponent,
     CreateTournamentComponent,
-    YourTournamentsComponent
+    YourTournamentsComponent,
+    TeamComponent,
+    CreateTeamComponent,
+    JoinedTournamentsComponent,
+    YourTeamsComponent
   ],
   imports: [
     BrowserModule,
@@ -63,6 +75,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   providers: [ 
     TournamentService,
     ProfileService,
+    TeamService,
+    PanelService,
     Auth,
     AuthGuard,
     {
@@ -76,7 +90,10 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     GameAccountsComponent,
     ProfileMainComponent,
     CreateTournamentComponent,
-    YourTournamentsComponent
+    YourTournamentsComponent,
+    CreateTeamComponent,
+    JoinedTournamentsComponent,
+    YourTeamsComponent
   ],
   bootstrap: [ 
     AppComponent 

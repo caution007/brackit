@@ -63,6 +63,10 @@ export class Tournament {
         return this._name;
     }
 
+    getType() {
+        return this._type;
+    }
+
     getInformation() {
         return this._information;
     }
@@ -81,6 +85,14 @@ export class Tournament {
 
     getIncludeDraws() {
         return this._includeDraws;
+    }
+
+    getStarted() {
+        return this._started;
+    }
+
+    getTeams() {
+        return [];
     }
 
     getStandings() {}

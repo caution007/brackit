@@ -31,9 +31,11 @@
           <!-- /.registrationType selector -->
           <div class="form-group" *ngIf="_registrationType === 'List'">
               <label class="col-md-4 control-label" for="threshold">Teams</label>
-              List all teams or players seperated by commas.
               <div class="col-md-4">
                   <textarea class="form-control" name="teamsinput" rows="5" [(ngModel)]="_lstTeams"></textarea>
+              </div>
+              <div class="col-md-4">
+                  <span>Put each team/player on a seperate line.</span>
               </div>
           </div>
           <!-- /.team textarea -->
@@ -105,7 +107,7 @@
               <label class="col-md-4 control-label" ></label>
               <div class="col-md-8">
                   <button id="submitButton" name="submitButton" class="btn btn-success" (click)="test()">Save</button>
-                  <button id="cancel" name="cancel" class="btn btn-inverse" (click)="fixtureTest()">Cancel</button>
+                  <button id="cancelButton" name="cancelButton" class="btn btn-danger" (click)="fixtureTest()">Cancel</button>
               </div>
           </div>
           <span>{{_createMsg}}</span>

@@ -68,7 +68,6 @@ router.get('/roundrobin/:tournamentid', (req, res, next) => {
 
 // GET tournament teams and players by tournament id //
 router.get('/tournament/teams/:tournamentid', (req, res, next) => {
-  let tournType;
   Tournament.findAsync({ '_id': req.params.tournamentid })
     .then((t) => {
       switch (t[0].type) {
@@ -76,12 +75,12 @@ router.get('/tournament/teams/:tournamentid', (req, res, next) => {
           RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
             .then((tt) => {
               let teams = [];
-              for (let i = 0 ; i < tt[0].teams.length ; i++) {
-                Team.findAsync({'_id': tt[0].teams[i].id})
+              for (let i = 0; i < tt[0].teams.length; i++) {
+                Team.findAsync({ '_id': tt[0].teams[i].id })
                   .then((tm) => {
                     teams.push(tm[0]);
                     if (i == (tt[0].teams.length - 1)) {
-                       res.status(200).json(teams);
+                      res.status(200).json(teams);
                     }
                   })
                   .catch((e) => {
@@ -95,12 +94,61 @@ router.get('/tournament/teams/:tournamentid', (req, res, next) => {
             })
             .error(console.error);
           break;
-  }
+      }
     })
     .catch(next)
     .error(console.error);
 });
 
+// GET RID OF DUPLICATE CODE ABOVE AND BELOW //
+// GET tournament players by tournament id //
+router.get('/tournament/players/:tournamentid', (req, res, next) => {
+  Tournament.findAsync({ '_id': req.params.tournamentid })
+    .then((t) => {
+      switch (t[0].type) {
+        case 'Round Robin':
+          RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
+            .then((tt) => {
+              let players = [];
+              for (let i = 0; i < tt[0].teams.length; i++) {
+                Profile.findAsync({ '_id': tt[0].teams[i].id })
+                  .then((p) => {
+                    players.push(p[0]);
+                    if (i == (tt[0].teams.length - 1)) {
+                      res.status(200).json(players);
+                    }
+                  })
+                  .catch((e) => {
+                    res.json({ 'status': 'error', 'error': e });
+                  })
+                  .error(console.error);
+              }
+            })
+            .catch((e) => {
+              res.json({ 'status': 'error', 'error': e });
+            })
+            .error(console.error);
+          break;
+      }
+    })
+    .catch(next)
+    .error(console.error);
+});
+
+// POST a new partaker to the tournament //
+router.post('/tournament/join', (req, res, next) => {
+  let team = createLeagueTeamObject(req.body.id, req.body.name);
+  switch (req.body.tournType) {
+    case 'Round Robin':
+      RoundRobinLeague.findOneAndUpdateAsync({ tournamentId: req.body.tournId }, { $push: {teams: team}})
+        .then((tournament) => {
+          res.json({ 'status': 'success' });
+        })
+        .catch(next)
+        .error(console.error);
+    break;
+  }
+})
 
 // POST a tournament //
 router.post('/tournament', (req, res) => {
@@ -165,13 +213,28 @@ function registrationTypeCheck(teams) {
   let array = [];
 
   for (let i = 0; i < splitTeams.length; i++) {
-    let obj = { id: '', name: splitTeams[i], played: 0, points: 0, wins: 0, draws: 0, losses: 0 };
-    array.push(obj);
+    let team = createLeagueTeamObject('', splitTeams[i]);
+    array.push(team);
   }
 
   teams = array;
   return teams;
 }
+
+function createLeagueTeamObject(id, name) {
+  let team = { id: id, name: name, played: 0, points: 0, wins: 0, draws: 0, losses: 0 };
+  return team;
+}
+
+// GET all teams owned by specific user, by user id //
+router.get('/tournaments/userid/:userId', (req, res, next) => {
+  Tournament.findAsync({ 'owner': req.params.userId })
+    .then((tournament) => {
+      res.status(200).json(tournament);
+    })
+    .catch(next)
+    .error(console.error);
+})
 
 // POST fixtures, when tournament starts //
 router.post('/fixtures', (req, res) => {
@@ -240,6 +303,7 @@ function saveMatch(m) {
     .then((m) => {
     })
     .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
     })
     .error(console.error);
 }
@@ -249,6 +313,7 @@ function saveBo1(bo1) {
     .then((bo1) => {
     })
     .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
     })
     .error(console.error);
 }
@@ -257,7 +322,8 @@ function matchModel(id, type, start) {
   let m = new Match({
     tournamentId: id,
     type: type,
-    start: start
+    start: start,
+    complete: false
   })
 
   return m;
@@ -296,13 +362,28 @@ router.get('/teams', (req, res, next) => {
     .error(console.error);
 });
 
+router.post('/team', (req, res) => {
+  console.log(req.body.team);
 
-router.get('/tournaments/userid/:userId', (req, res, next) => {
-  Tournament.findAsync({ 'owner': req.params.userId })
-    .then((tournament) => {
-      res.status(200).json(tournament);
+  let members = [{
+    id: req.body.team.owner,
+    username: req.body.team.ownerName,
+    role: 'owner'
+  }]
+
+  let team = new Team({
+    name: req.body.team.name,
+    members: members,
+    joinPassword: req.body.team.joinPassword
+  })
+
+  team.saveAsync()
+    .then((team) => {
+      res.json({ 'status': 'success', 'tournament': team });
     })
-    .catch(next)
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
     .error(console.error);
 })
 
@@ -347,6 +428,8 @@ router.put('/profile/update/:_id', (req, res, next) => {
     .catch(next)
     .error(console.error);
 })
+
+
 
 
 module.exports = router;

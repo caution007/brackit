@@ -1,5 +1,5 @@
 <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -9,7 +9,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" routerLink="/" routerLinkActive="active">Brackit</a>
+                <a class="navbar-brand" routerLink="/" routerLinkActive="active"><img id="logo" src="img/brackit.png"></a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -17,7 +17,7 @@
                          <a routerLink="/tournaments" routerLinkActive="active">Tournaments</a>
                     </li>
                     <li>
-                        <a href="contact.html">Contact</a>
+                        <a>Contact</a>
                     </li>
                     <li class="dropdown" *ngIf="_auth.authenticated()">
                         <a class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>

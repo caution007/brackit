@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 var matchSchema = new mongoose.Schema ({
   tournamentId: String,
   type: String,
-  start: Date
+  start: Date,
+  complete: Boolean
 }, {
   versionKey: false
 });

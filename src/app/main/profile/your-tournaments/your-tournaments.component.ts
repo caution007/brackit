@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { TournamentService } from '../../tournament/services/tournament.service';
+import { PanelService } from '../../profile/services/panel.service';
 
 @Component({
   selector: 'app-your-tournaments',
@@ -12,7 +13,8 @@ export class YourTournamentsComponent implements OnInit {
   private _yourTournaments: any = [];
   private _user;
 
-  constructor(private _tournamentService: TournamentService) { }
+  constructor(private _tournamentService: TournamentService,
+                private _panelService: PanelService) { }
 
   ngOnInit() {
     this._user = JSON.parse(localStorage.getItem('profile'));
@@ -21,5 +23,4 @@ export class YourTournamentsComponent implements OnInit {
       this._yourTournaments = tournaments;
     });
   }
-
 }

@@ -1,8 +1,8 @@
 // Adapted from: http://plnkr.co/edit/UGzoPTCHlXKWrn4p8gd1?p=preview //
 //our root app component
-import {NgModule, Component, Compiler, ViewContainerRef, ViewChild, Input, ComponentRef, ComponentFactory, ComponentFactoryResolver, ChangeDetectorRef} from '@angular/core'
-import {BrowserModule} from '@angular/platform-browser'
-import {FormsModule} from '@angular/forms'
+import { NgModule, Component, Compiler, ViewContainerRef, ViewChild, Input, ComponentRef, ComponentFactory, ComponentFactoryResolver, ChangeDetectorRef } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
+import { FormsModule } from '@angular/forms'
 
 // Helper component to add dynamic components
 @Component({
@@ -21,6 +21,7 @@ export class DclWrapper {
     if(!this.isViewInitialized) {
       return;
     }
+    
     if(this.cmpRef) {
       // when the `type` input changes we destroy a previously 
       // created component before creating the new one

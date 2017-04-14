@@ -7,7 +7,7 @@
         </div>
     </div>
     
-    <div class="row">
+    <div class="row" *ngIf="_panel">
       <div class="col-sm-3 col-md-3">
         <div class="panel-group" id="accordion">
           <div class="panel panel-default">
@@ -19,10 +19,9 @@
             </div>
             <div id="profileCollapse" class="panel-collapse collapse">
               <ul class="list-group">
-                <li class="list-group-item"><span class="glyphicon glyphicon-file text-info"></span><a (click)="setProfileMainComponent()">View</a></li>
-                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="setEditProfileComponent()">Edit</a></li>
-                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="setGameAccountsComponent()">Game Accounts</a></li>
-                <li class="list-group-item"><span class="glyphicon glyphicon-file text-info"></span><a >Newsletters</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-file text-info"></span><a (click)="panelChecker(0)">View</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="panelChecker(1)">Edit</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="panelChecker(2)">Game Accounts</a></li>
               </ul>
             </div>
           </div>
@@ -50,9 +49,9 @@
             </div>
             <div id="tournamentsCollapse" class="panel-collapse collapse">
               <div class="list-group">
-                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="setYourTournamentsComponent()">Your Tournaments</a></li>
-                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="setGameAccountsComponent()">Joined Tournaments</a></li>
-                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="setCreateTournamentComponent()">Create</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="panelChecker(4)">Your Tournaments</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="panelChecker(5)">Joined Tournaments</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a (click)="panelChecker(6)">Create</a></li>
               </div>
             </div>
           </div>
@@ -66,7 +65,8 @@
             </div>
             <div id="teamCollapse" class="panel-collapse collapse">
               <ul class="list-group">
-                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a >View</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="panelChecker(7)">Create</a></li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a (click)="panelChecker(8)">Your Teams</a></li>
                 <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a >Admin</a></li>
               </ul>
             </div>
