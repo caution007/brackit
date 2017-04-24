@@ -5,6 +5,8 @@ var profileSchema = new mongoose.Schema ({
   username: String,
   firstName: String,
   familyName: String,
+  tournaments: Array,
+  matches: Array
 }, {
   versionKey: false
 });

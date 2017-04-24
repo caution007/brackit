@@ -11,7 +11,7 @@ import { TournamentService } from './services/tournament.service';
 })
 export class TournamentsComponent implements OnInit {
 
-  private tournaments: any = [];
+  private tournaments: Array<any> = [];
 
   constructor(private tournamentService: TournamentService,
                 private router: Router) {

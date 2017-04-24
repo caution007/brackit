@@ -10,6 +10,7 @@ import { Tournament } from './model/Tournament';
 import { TournamentFactory } from './model/TournamentFactory';
 import { EnumConverter } from '../utilities/EnumConverter';
 import { ProfileService } from '../profile/services/profile.service';
+import { TeamService } from '../team/services/team.service';
 
 @Component({
   selector: 'app-tournament',
@@ -30,11 +31,19 @@ export class TournamentComponent implements OnInit {
   private _players;
   private _standings;
   private _inTournament = false;
+  private _teamOwner;
+  private _myTeam;
+  private _ownedTeams;
+  private _selectedOwnedTeam;
+
+  private _matches;
 
   constructor(private _tournamentService: TournamentService,
                 private _activatedRoute: ActivatedRoute,
-    private _auth: Auth,
-    private _profileService: ProfileService) {
+                  private _auth: Auth,
+                    private _profileService: ProfileService,
+                      private _router: Router,
+                        private _teamService: TeamService) {
     this._user = JSON.parse(localStorage.getItem('profile'));
     this._tournamentFactory = new TournamentFactory();
     this._enumConverter = new EnumConverter();
@@ -56,7 +65,6 @@ export class TournamentComponent implements OnInit {
     this._tournamentService.getTournament(this._paramID).subscribe(parentTournament => {
       this.getAllTournamentInfo(parentTournament);
     });
-
   }
 
   getAllTournamentInfo(parentTournament) {
@@ -67,35 +75,50 @@ export class TournamentComponent implements OnInit {
 
       if (this._tournament.getTeams().length != 0) {
         this._standings = this._tournament.getStandings()
+        console.log(this._tournament.getTeams());
       }
 
-      if (this._auth.authenticated()) {
-        if (this._tournament.getRegistrationType() == RegistrationType.SIGNUP) {
-          if (this._tournament.getCompetitorType() == CompetitorType.TEAM) {
-            this._tournamentService.getTeamsAndPlayers(this._tournament.getId()).subscribe(teams => {
-              this._teams = teams;
-              console.log(teams);
-              this.checkIfInTournamentTeams();
-            })
-          } else if (this._tournament.getCompetitorType() == CompetitorType.USER) {
-            this._tournamentService.getPlayers(this._tournament.getId()).subscribe(players => {
-              this._players = players;
-              console.log(players);
+      if (this._tournament.getRegistrationType() == RegistrationType.SIGNUP) {
+        if (this._tournament.getCompetitorType() == CompetitorType.TEAM) {
+          this._tournamentService.getTeamsAndPlayers(this._tournament.getId()).subscribe(teams => {
+            this._teams = teams;
+            console.log(this._teams);
+            if (this._auth.authenticated()) {
+              if(!this.checkIfInTournamentTeams()) {
+                this._teamService.getOwnedTeams(this._profile._id).subscribe(teams => {
+                  this._ownedTeams = teams.teams;
+                })
+              }
+            }
+          })
+        } else if (this._tournament.getCompetitorType() == CompetitorType.USER) {
+          this._tournamentService.getPlayers(this._tournament.getId()).subscribe(players => {
+            this._players = players;
+            console.log(this._players);
+            if (this._auth.authenticated()) {
               this.checkIfInTournamentUsers();
-            })
-          }
-
+            }
+          })
         }
+      }
+
+      if(this._tournament.getStarted()) {
+        this._tournamentService.getMatches(this._tournament.getId()).subscribe(matches => {
+          this._matches = matches;
+          console.log(this._matches);
+        })
       }
     });
   }
 
   checkIfInTournamentTeams() {
     for (let i = 0; i < this._teams.length; i++) {
-      for (let l = 0; i < this._teams[i].members.length; i++) {
+      for (let l = 0; l < this._teams[i].members.length; l++) {
         if (this._teams[i].members[l].id == this._profile._id) {
+          this._myTeam = this._teams[i];
+          console.log(this._myTeam);
           this._inTournament = true;
-          console.log(this._inTournament);
+          this.checkIfTeamOwner();
           break;
         }
       }
@@ -116,14 +139,58 @@ export class TournamentComponent implements OnInit {
     this._tournamentService.joinTournament(this._tournament.getId(),
       this._tournament.getType(),
       this._profile._id,
-      this._user.username)
-      .subscribe(result => {
+      this._user.username,
+      this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType())).subscribe(result => {
         console.log(result);
       })
   }
 
   joinTournamentTeam() {
+    if(this._selectedOwnedTeam) {
+      this._tournamentService.joinTournament(this._tournament.getId(), 
+      this._tournament.getType(),
+      this._selectedOwnedTeam.id,
+      this._selectedOwnedTeam.name,
+      this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType())).subscribe(result => {
+        console.log(result);
+      })
+    } else {
+      console.log('Select A Team');
+    }
+  }
+  
+  leaveTournament(id) {
+    this._tournamentService.leaveTournament(
+      this._tournament.getId(),
+      this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType()), 
+      this._tournament.getType(),
+      id).subscribe(result => {
+        console.log(result);
+      })
+  }
 
+  test() {
+    console.log(this._selectedOwnedTeam);
+  }
+
+  checkIfTeamOwner() {
+    this._myTeam.members.forEach(member => {
+      if(member.id == this._profile._id) {
+        if(member.role == 'owner') {
+          this._teamOwner = true;
+        } else {
+          this._teamOwner = false;
+        }
+      }
+    });
+  }
+
+  navToTeam(selectedTeamID) {
+    this._router.navigate(['/team', selectedTeamID]);
+  }
+
+  navToPlayer(selectedPlayerID) {
+    this._router.navigate(['/profile', selectedPlayerID]);
   }
 
 }

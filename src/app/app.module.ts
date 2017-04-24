@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule, Http, RequestOptions } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { provideAuth, AuthHttp, AuthConfig } from 'angular2-jwt';
+import { Typeahead } from 'ng2-typeahead';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './auth/auth.guard';
@@ -27,12 +28,16 @@ import { TeamComponent } from './main/team/team.component';
 import { CreateTeamComponent } from './main/profile/create-team/create-team.component';
 import { JoinedTournamentsComponent } from './main/profile/joined-tournaments/joined-tournaments.component';
 import { YourTeamsComponent } from './main/profile/your-teams/your-teams.component';
+import { PublicProfileComponent } from './main/profile/public-profile/public-profile.component';
+import { MatchComponent } from './main/match/match.component';
+import { EditTournamentComponent } from './main/profile/edit-tournament/edit-tournament.component';
 
 // SERVICES //
 import { TournamentService } from './main/tournament/services/tournament.service';
 import { ProfileService } from './main/profile/services/profile.service';
 import { PanelService } from './main/profile/services/panel.service';
 import { TeamService } from './main/team/services/team.service';
+import { MatchService } from './main/match/services/match.service';
 import { Auth } from './auth/auth.service';
 
 
@@ -64,7 +69,11 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     TeamComponent,
     CreateTeamComponent,
     JoinedTournamentsComponent,
-    YourTeamsComponent
+    YourTeamsComponent,
+    PublicProfileComponent,
+    MatchComponent,
+    EditTournamentComponent,
+    Typeahead
   ],
   imports: [
     BrowserModule,
@@ -77,6 +86,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     ProfileService,
     TeamService,
     PanelService,
+    MatchService,
     Auth,
     AuthGuard,
     {
@@ -93,7 +103,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     YourTournamentsComponent,
     CreateTeamComponent,
     JoinedTournamentsComponent,
-    YourTeamsComponent
+    YourTeamsComponent,
+    EditTournamentComponent
   ],
   bootstrap: [ 
     AppComponent 

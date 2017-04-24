@@ -52,9 +52,47 @@ router.get('/tournaments/type/:type', (req, res, next) => {
     .then((tournaments) => {
       res.status(200).json(tournaments);
     })
-    .catch(next)
+    .catch((next) => {
+      res.json({ 'status': 'error', 'error': next });
+    })
     .error(console.error);
 });
+
+// GET fixtures for a given tournament, by tournament id //
+router.get('/tournament/matches/:id', (req, res) => {
+  Match.findAsync({ 'tournamentId': req.params.id })
+    .then((match) => {
+      let matches = { fixtures: [], results: [] };
+      let count = 0;
+      for (let i = 0; i < match.length; i++) {
+        (function(index) {
+          Bo1.findAsync({ 'matchId': match[index]._id })
+            .then((type) => {
+              let newMatch = match[index].toObject();
+              newMatch.victor = type[0].victor;
+              newMatch.partakers = type[0].partakers;
+
+              if(newMatch.complete) {
+                matches.results.push(newMatch);
+              } else {
+                matches.fixtures.push(newMatch);
+              }
+
+              count++;
+              if (count > (match.length - 1)) {
+                matches.fixtures.sort(sortStartDate);
+                matches.results.sort(sortStartDate);
+                res.status(200).json(matches);
+              }
+            })
+        }(i))
+      }
+    })
+})
+
+function sortStartDate(a, b) {
+  return new Date(a.start) - new Date(b.start);
+}
 
 // GET roundrobin tournament by tournament id //
 router.get('/roundrobin/:tournamentid', (req, res, next) => {
@@ -62,7 +100,9 @@ router.get('/roundrobin/:tournamentid', (req, res, next) => {
     .then((tournament) => {
       res.status(200).json(tournament);
     })
-    .catch(next)
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
     .error(console.error);
 });
 
@@ -75,18 +115,24 @@ router.get('/tournament/teams/:tournamentid', (req, res, next) => {
           RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
             .then((tt) => {
               let teams = [];
+              let count = 0;
               for (let i = 0; i < tt[0].teams.length; i++) {
-                Team.findAsync({ '_id': tt[0].teams[i].id })
-                  .then((tm) => {
-                    teams.push(tm[0]);
-                    if (i == (tt[0].teams.length - 1)) {
-                      res.status(200).json(teams);
-                    }
-                  })
-                  .catch((e) => {
-                    res.json({ 'status': 'error', 'error': e });
-                  })
-                  .error(console.error);
+                (function(index) {
+                  Team.findAsync({ '_id': tt[0].teams[index].id })
+                    .then((tm) => {
+                      tm = tm[0].toObject();
+                      delete tm.joinPassword;
+                      teams.splice(index, 0, tm);
+                      count++;
+                      if (count > (tt[0].teams.length - 1)) {
+                        res.status(200).json(teams);
+                      }
+                    })
+                    .catch((e) => {
+                      res.json({ 'status': 'error', 'error': e });
+                    })
+                    .error(console.error);
+                }(i))
               }
             })
             .catch((e) => {
@@ -100,7 +146,6 @@ router.get('/tournament/teams/:tournamentid', (req, res, next) => {
     .error(console.error);
 });
 
-// GET RID OF DUPLICATE CODE ABOVE AND BELOW //
 // GET tournament players by tournament id //
 router.get('/tournament/players/:tournamentid', (req, res, next) => {
   Tournament.findAsync({ '_id': req.params.tournamentid })
@@ -110,11 +155,14 @@ router.get('/tournament/players/:tournamentid', (req, res, next) => {
           RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
             .then((tt) => {
               let players = [];
+              let count = 0;
               for (let i = 0; i < tt[0].teams.length; i++) {
-                Profile.findAsync({ '_id': tt[0].teams[i].id })
+                (function(index) {
+                  Profile.findAsync({ '_id': tt[0].teams[index].id })
                   .then((p) => {
-                    players.push(p[0]);
-                    if (i == (tt[0].teams.length - 1)) {
+                    players.splice(index, 0, p[0])
+                    count++;
+                    if (count > (tt[0].teams.length - 1)) {
                       res.status(200).json(players);
                     }
                   })
@@ -122,6 +170,7 @@ router.get('/tournament/players/:tournamentid', (req, res, next) => {
                     res.json({ 'status': 'error', 'error': e });
                   })
                   .error(console.error);
+                }(i))
               }
             })
             .catch((e) => {
@@ -136,17 +185,75 @@ router.get('/tournament/players/:tournamentid', (req, res, next) => {
 });
 
 // POST a new partaker to the tournament //
-router.post('/tournament/join', (req, res, next) => {
+router.post('/tournament/join', (req, res) => {
   let team = createLeagueTeamObject(req.body.id, req.body.name);
   switch (req.body.tournType) {
     case 'Round Robin':
-      RoundRobinLeague.findOneAndUpdateAsync({ tournamentId: req.body.tournId }, { $push: {teams: team}})
+      RoundRobinLeague.findOneAndUpdateAsync(
+        { tournamentId: req.body.tournId }, 
+        { $push: {teams: team} })
         .then((tournament) => {
           res.json({ 'status': 'success' });
+
+          if(req.body.cType == 'Team') {
+            Team.findByIdAndUpdateAsync(
+              req.body.id, 
+              { $push: {tournaments: req.body.tournId} })
+              .catch((e) => {
+                res.json({ 'status': 'error', 'error': e });
+              })
+              .error(console.error);
+          } else if (req.body.cType == 'User') {
+            Profile.findByIdAndUpdateAsync(
+              req.body.id, 
+              { $push: {tournaments: req.body.tournId} })
+              .catch((e) => {
+                res.json({ 'status': 'error', 'error': e });
+              })
+              .error(console.error);
+          }
         })
-        .catch(next)
+        .catch((e) => {
+          res.json({ 'status': 'error', 'error': e });
+        })
         .error(console.error);
-    break;
+      break;
+  }
+})
+
+// DELETE a partaker from a tournament //
+router.post('/tournament/leavetournament', (req, res) => {
+  switch (req.body.tournType) {
+    case 'Round Robin':
+      RoundRobinLeague.findOneAndUpdateAsync(
+        { tournamentId: req.body.tournId }, 
+        { $pull: { 'teams': {id: req.body.id} } })
+        .then((tournament) => {
+          res.json({ 'status': 'success' });
+
+          if(req.body.cType == 'Team') {
+            Team.findByIdAndUpdateAsync(
+              req.body.id,
+              { $pull: { 'tournaments': req.body.tournId } })
+              .catch((e) => {
+                res.json({ 'status': 'error', 'error': e });
+              })
+              .error(console.error);
+          } else if (req.body.cType == 'User') {
+            Profile.findByIdAndUpdateAsync(
+              req.body.id,
+              { $pull: { 'tournaments': req.body.tournId } })
+              .catch((e) => {
+                res.json({ 'status': 'error', 'error': e });
+              })
+              .error(console.error);
+          }
+        })
+        .catch((e) => {
+          res.json({ 'status': 'error', 'error': e });
+        })
+        .error(console.error);
+      break;
   }
 })
 
@@ -154,6 +261,7 @@ router.post('/tournament/join', (req, res, next) => {
 router.post('/tournament', (req, res) => {
   console.log(req.body.tournament);
   let start = req.body.tournament[6] + "T" + req.body.tournament[7] + ":00Z";
+  let teamLimit = {current: 0, max: req.body.tournament[12]};
 
   let tournament = new Tournament({
     name: req.body.tournament[0],
@@ -169,10 +277,13 @@ router.post('/tournament', (req, res) => {
     started: false,
     complete: false,
     victor: null,
-    owner: req.body.tournament[11]
+    owner: req.body.tournament[11],
+    teamLimit: teamLimit,
+    fixtureInterval: req.body.tournament[13],
+    game: req.body.tournament[14]
   })
 
-  postTournamentType(req.body.tournament[1], req.body.tournament[2], req.body.tournament[12], tournament._id);
+  postTournamentType(req.body.tournament[1], req.body.tournament[2], req.body.tournament[15], tournament._id);
 
   tournament.saveAsync()
     .then((tournament) => {
@@ -222,11 +333,11 @@ function registrationTypeCheck(teams) {
 }
 
 function createLeagueTeamObject(id, name) {
-  let team = { id: id, name: name, played: 0, points: 0, wins: 0, draws: 0, losses: 0 };
+  let team = { id: id, name: name, played: 0, points: 0, wins: 0, draws: 0, losses: 0, position: 0, finalPosition: null };
   return team;
 }
 
-// GET all teams owned by specific user, by user id //
+// GET all tournaments owned by specific user, by user id //
 router.get('/tournaments/userid/:userId', (req, res, next) => {
   Tournament.findAsync({ 'owner': req.params.userId })
     .then((tournament) => {
@@ -243,7 +354,9 @@ router.post('/fixtures', (req, res) => {
     competitorLst.push(req.body.teams[i]);
   }
 
-  if (competitorLst.length % 2 != 0) { competitorLst.push("Bye"); }
+  if (competitorLst.length % 2 != 0) { 
+    competitorLst.push("Bye"); 
+  }
 
   let fixturesNum = competitorLst.length - 1;
   let fixturesHalf = competitorLst.length / 2;
@@ -253,44 +366,60 @@ router.post('/fixtures', (req, res) => {
   let competitorsNum = competitors.length;
   console.log(competitors);
   let haCounter = 0; // Home and Away counter for team 0
-
+  let date;
   for (let i = 0; i < fixturesNum; i++) {
     console.log("Fixture " + (i + 1));
 
     let team = i % competitorsNum;
 
-    if (haCounter == 0) {
-      console.log(competitors[team] + " vs " + competitorLst[0]);
-
-      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[team], competitorLst[0]);
-
-      haCount = 1;
+    if (i == 0) {
+      date = req.body.start;
     } else {
-      console.log(competitorLst[0] + " vs " + competitors[team]);
+      date = getAndSetDateFixture(date, req.body.interval);
+    }
+    
+    if (haCounter == 0) {
+      console.log(competitors[team] + " vs " + competitorLst[0] + " start: " + date);
 
-      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitorLst[0], competitors[team]);
+      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[team], competitorLst[0], date, req.body.rType);
 
-      haCount = 0;
+      haCounter = 1;
+    } else {
+      console.log(competitorLst[0] + " vs " + competitors[team] + " start: " + date);
+
+      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitorLst[0], competitors[team], date, req.body.rType);
+
+      haCounter = 0;
     }
 
     for (let l = 1; l < fixturesHalf; l++) {
       let teamOne = (i + l) % competitorsNum;
       let teamTwo = (i + competitorsNum - l) % competitorsNum;
-      console.log(competitors[teamOne] + " vs " + competitors[teamTwo])
+      console.log(competitors[teamOne] + " vs " + competitors[teamTwo] + " start: " + date)
 
-      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[teamOne], competitors[teamTwo]);
+      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[teamOne], competitors[teamTwo], date,req.body.rType);
     }
-    res.json({ 'status': 'success' });
+
+    if (i == (fixturesNum - 1)) {
+      res.json({ 'status': 'success' });
+    }
   }
 });
 
-function checkMatchAndCreate(id, type, mType, teamOne, teamTwo) {
-  let match = matchModel(id, type, null);
+function getAndSetDateFixture(string, interval) {
+  let date = new Date(string);
+  let newDate = date.getDate() + interval;
+  date.setDate(newDate);
+  return date;
+}
+
+function checkMatchAndCreate(id, type, mType, teamOne, teamTwo, date, rType) {
+  let match = matchModel(id, mType, date);
   let matchType;
 
   switch (mType) {
     case 'bo1':
-      matchType = bo1Model(teamOne, teamTwo, match._id);
+      matchType = bo1Model(teamOne, teamTwo, match._id, rType);
       break;
   }
 
@@ -329,21 +458,22 @@ function matchModel(id, type, start) {
   return m;
 }
 
-function bo1Model(teamOne, TeamTwo, id) {
-  let obj = new Object();
-  obj.id = teamOne;
-  obj.score = "";
-  let json1 = JSON.stringify(obj);
-  obj = new Object();
-  obj.id = TeamTwo;
-  obj.score = "";
-  let json2 = JSON.stringify(obj);
+function bo1Model(teamOne, teamTwo, id, rType) {
+  let partakerOne = {id: teamOne[1], name: teamOne[0], score: ''};
+  let partakerTwo = {id: teamTwo[1], name: teamTwo[0], score: ''};
+  let partakers = [partakerOne, partakerTwo];
 
-  let partakers = [json1, json2];
+  let resultInputObj;
+  if(rType == 'List') {
+    resultInputObj = {};
+  } else if (rType == 'Signup'){
+    resultInputObj = {partakerOne: {scoreOne: '', scoreTwo: ''}, partakerTwo: {scoreOne: '', scoreTwo: ''}};
+  }
 
   let bo1 = new Bo1({
     matchId: id,
     partakers: partakers,
+    resultInput: resultInputObj,
     victor: ""
   })
 
@@ -354,6 +484,7 @@ function bo1Model(teamOne, TeamTwo, id) {
 
 // GET all teams //
 router.get('/teams', (req, res, next) => {
+  Player
   Team.findAsync({})
     .then((teams) => {
       res.status(200).json(teams);
@@ -362,6 +493,45 @@ router.get('/teams', (req, res, next) => {
     .error(console.error);
 });
 
+// GET one team, by id //
+router.get('/team/:id', (req, res) => {
+  Team.findByIdAsync(req.params.id)
+    .then((team) => {
+        let members = [];
+
+        var count = 0;
+
+        for(let i = 0; i < team.members.length; i++) {
+          (function(index) {
+            Profile.findByIdAsync(team.members[index].id)
+            .then((profile) => {
+              profile = profile.toObject(); // Converts mongoose doc to plane object
+              // Deletes the join password, so it's not passed to client side
+              delete profile.userId;
+              profile.role = team.members[index].role; // Combines Role element
+              members.splice(index, 0, profile);
+              count++;
+              if (count > (team.members.length - 1)) {
+                team.members = members;
+                team = team.toObject();
+                // Deletes the join password, so it's not passed to client side
+                delete team.joinPassword; 
+                res.status(200).json(team);
+              }
+            })
+            .catch((e) => {
+            })
+            .error(console.error);
+          }(i));
+        } 
+      })
+      .catch((e) => {
+        res.json({ 'status': 'error', 'error': e });
+      })
+      .error(console.error);
+});
+
+// POST new team //
 router.post('/team', (req, res) => {
   console.log(req.body.team);
 
@@ -374,7 +544,9 @@ router.post('/team', (req, res) => {
   let team = new Team({
     name: req.body.team.name,
     members: members,
-    joinPassword: req.body.team.joinPassword
+    joinPassword: req.body.team.joinPassword,
+    tournaments: [],
+    matches: []
   })
 
   team.saveAsync()
@@ -387,9 +559,58 @@ router.post('/team', (req, res) => {
     .error(console.error);
 })
 
+// POST a new member to a team //
+router.post('/team/join', (req, res) => {
+  let member = createTeamMemberObject(req.body.id, req.body.name);
+
+  Team.findByIdAsync(req.body.teamId)
+    .then((team) => {
+      console.log(req.body.joinPassword);
+      console.log(team.joinPassword);
+
+      if (req.body.joinPassword == team.joinPassword) {
+        Team.findOneAndUpdateAsync({ _id: req.body.teamId }, { $push: {members: member}})
+        .then((member) => {
+          res.json({ 'password': true });
+        })
+        .catch((e) => {
+          res.json({ 'status': 'error', 'error': e });
+        })
+        .error(console.error);
+      } else {
+        res.json({ 'password': false });
+      }
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
+function createTeamMemberObject(id, username) { 
+  return {id: id, username: username, role: 'member'};
+}
+
+router.get('/ownedteams/:id', (req, res) => {
+  Team.findAsync({'members.id': req.params.id, 'members.role': 'owner'})
+    .then((teams) => {
+      let teamArray = [];
+
+      for(let i = 0; i < teams.length ; i++) {
+        teamArray.push({name: teams[i].name, id: teams[i]._id});
+      }
+
+      res.json({ 'status': 'success', 'teams': teamArray });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
 // PROFILE //
 
-// GET profile by id, if it exists //
+// GET profile by id, if it exists. If not create a new blank profile //
 router.get('/profile/:userId', (req, res, next) => {
   Profile.findAsync({ 'userId': req.params.userId })
     .then((profile) => {
@@ -407,7 +628,9 @@ function createProfile(id, username) {
     userId: id,
     username: '',
     firstName: '',
-    familyName: ''
+    familyName: '',
+    tournaments: [],
+    matches: []
   })
 
   profile.saveAsync()
@@ -420,6 +643,7 @@ function createProfile(id, username) {
   return profile;
 }
 
+// UPDATE profile, by id //
 router.put('/profile/update/:_id', (req, res, next) => {
   Profile.findOneAndUpdateAsync({ _id: req.params._id }, req.body)
     .then((profile) => {
@@ -429,7 +653,82 @@ router.put('/profile/update/:_id', (req, res, next) => {
     .error(console.error);
 })
 
+// GET one public profile //
+router.get('/profile/public/:id', (req, res, next) => {
+  Profile.findByIdAsync(req.params.id)
+    .then((profile) => {
+      profile = profile.toObject();
+      delete profile.userId;
+      res.status(200).json(profile);
+    })
+    .catch(next)
+    .error(console.error);
+});
 
-
+// MATCH //
+router.get('/match/:id', (req, res, next) => {
+  let matchData = {};
+  Match.findByIdAsync(req.params.id)
+    .then((match) => {
+      matchData.match = match;
+      switch(match.type) {
+        case 'bo1':
+          Bo1.findAsync({ 'matchId': match._id })
+            .then((bo1) => {
+              matchData.matchType = bo1[0];
+              Tournament.findByIdAsync(match.tournamentId)
+                .then((tournament) => {
+                  matchData.tournament = tournament
+                  switch(tournament.type) {
+                    case 'Round Robin':
+                      RoundRobinLeague.findAsync({ 'tournamentId': tournament._id })
+                        .then((tournamentType) => {
+                          matchData.tournamentType = tournamentType[0];
+                          if(tournament.competitorType == 'Team') {
+                            matchData.teams = [];
+                            let count = 0;
+                            for(let i = 0; i < 2; i++) {
+                              (function(index) {
+                                Team.findByIdAsync(bo1[0].partakers[index].id)
+                                  .then((team) => {
+                                    team = team.toObject();
+                                    delete team.joinPassword;
+                                    matchData.teams.splice(index, 0, team);
+                                    count++;
+                                    if (count > 1) {
+                                      res.status(200).json(matchData);
+                                    }
+                                  })
+                                  .catch((e) => {
+                                    res.json({ 'status': 'error', 'error': e });
+                                  })
+                                  .error(console.error);
+                              }(i));
+                            }
+                          } else {
+                            res.status(200).json(matchData);
+                          }
+                        })
+                        .catch((e) => {
+                          res.json({ 'status': 'error', 'error': e });
+                        })
+                        .error(console.error);
+                    }
+                })
+                .catch((e) => {
+                  res.json({ 'status': 'error', 'error': e });
+                })
+                .error(console.error);
+            })
+            .catch((e) => {
+              res.json({ 'status': 'error', 'error': e });
+            })
+            .error(console.error);
+          break;
+      }
+    })
+    .catch(next)
+    .error(console.error);
+})
 
 module.exports = router;

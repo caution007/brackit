@@ -19,11 +19,11 @@
                     <li>
                         <a>Contact</a>
                     </li>
-                    <li class="dropdown" *ngIf="_auth.authenticated()">
-                        <a class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+                    <li class="dropdown" *ngIf="_auth.authenticated() && _user">
+                        <a class="dropdown-toggle" data-toggle="dropdown">{{_user.username}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                              <li>
-                                <a routerLink="/profile" routerLinkActive="active">Profile</a>
+                                <a routerLink="/profile" routerLinkActive="active" >Profile</a>
                             </li>
                             <li>
                                 <a routerLink="/usertournaments" routerLinkActive="active">Tournaments</a>
@@ -37,7 +37,7 @@
                         <button type="button" class="btn btn-success navbar-btn" (click)="_auth.login()" *ngIf="!_auth.authenticated()">
                             <a class="link-button-color"><span class="glyphicon glyphicon-lock"></span> Log In/Sign Up</a>
                         </button>
-                        <button type="button" class="btn btn-danger navbar-btn" (click)="_auth.logout()" *ngIf="_auth.authenticated()">
+                        <button type="button" class="btn btn-danger navbar-btn" (click)="_auth.logout() && logout()" *ngIf="_auth.authenticated()">
                             <a class="link-button-color"><span class="glyphicon glyphicon-lock"></span> Log Out</a>
                         </button>
                     </li>

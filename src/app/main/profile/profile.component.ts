@@ -13,6 +13,7 @@ import { YourTournamentsComponent } from './your-tournaments/your-tournaments.co
 import { CreateTeamComponent } from './create-team/create-team.component';
 import { JoinedTournamentsComponent } from './joined-tournaments/joined-tournaments.component';
 import { YourTeamsComponent } from './your-teams/your-teams.component';
+import { EditTournamentComponent } from './edit-tournament/edit-tournament.component';
 
 @Component({
   selector: 'app-profile',
@@ -72,7 +73,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this._panel = YourTeamsComponent;
         break;
       case 9: 
-       //this._panel = YourTeamsComponent;
+        this._panel = EditTournamentComponent;
         break;
     }
   }

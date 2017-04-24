@@ -12,6 +12,37 @@
           </div>
           <!-- /.name input -->
           <div class="form-group">
+              <label class="col-md-4 control-label" >Game</label>
+              <div class="col-md-4">
+                  <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_gameChoice">
+                      <option *ngFor="let gameChoice of _gameChoices" [ngValue]="gameChoice">{{gameChoice[0]}}</option>
+                  </select>
+              </div>
+          </div>
+          <!-- /.game choice selector -->
+          <div class="form-group" *ngIf="_gameChoice && _gameChoice[1]">
+              <label class="col-md-4 control-label" >Choose</label>
+              <div class="col-md-6">
+                  <input name="owngameinput" type="text" [(ngModel)]="_game" class="form-control input-md">
+              </div>
+          </div>
+          <!-- /.choose your own game input -->
+          <div class="form-group" *ngIf="_gameChoice && !_gameChoice[1]">
+              <label class="col-md-4 control-label" >Chooseeee</label>
+              <div class="col-md-6">
+                <typeahead name="test"
+                    [(ngModel)]="_selectedGame"
+                    [list]="_gameList"
+                    [searchProperty]="'searchText'" [displayProperty]="'name'"
+                    [maxSuggestions]="2"
+                    (suggestionSelected)="gameSelected($event)"
+                    placeholder="Begin typing a fruit">
+                    </typeahead>
+                    <p>Selected {{ _game }}</p>
+              </div>
+          </div>
+          <!-- /.choose from supported game input -->
+          <div class="form-group">
               <label class="col-md-4 control-label" >Type</label>
               <div class="col-md-4">
                   <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_type">
@@ -61,7 +92,7 @@
               <label class="col-md-4 control-label" >Include Draws?</label>
               <div class="col-md-4">
                   <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_includeDraws">
-                      <option *ngFor="let choice of _yesNoChoices">{{choice[0]}}</option>
+                      <option *ngFor="let choice of _yesNoChoices" [ngValue]="choice">{{choice[0]}}</option>
                   </select>
               </div>
           </div>
@@ -74,7 +105,27 @@
                   </select>
               </div>
           </div>
-          <!-- /.includeDraws selector -->
+          <!-- /.matchType selector -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Max Participants</label>
+              <div class="col-md-2">
+                  <input name="playerlimitinput" type="number" [(ngModel)]="_teamLimit" class="form-control input-md">
+              </div>
+              <div class="col-md-4">
+                  <span>Keep the number even.</span>
+              </div>
+          </div>
+          <!-- /.name input -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" >Fixture Interval</label>
+              <div class="col-md-2">
+                  <input name="fixintervalinput" type="number" [(ngModel)]="_fixtureInterval" class="form-control input-md">
+              </div>
+              <div class="col-md-4">
+                  <span>The amount of days between each round of fixtures.</span>
+              </div>
+          </div>
+          <!-- /.name input -->
           <div class="form-group">
               <label class="col-md-4 control-label" >Start Date</label>
               <div class="col-md-6">

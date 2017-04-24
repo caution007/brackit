@@ -40,6 +40,9 @@ export class TournamentFactory {
             tournJSON.complete,
             tournJSON.victor,
             tournJSON.owner,
+            tournJSON.teamLimit,
+            tournJSON.fixtureInterval,
+            tournJSON.game,
             tournTypeJSON[0].teams
         );
     }

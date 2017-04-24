@@ -11,15 +11,17 @@ import { ProfileService } from '../profile/services/profile.service';
 })
 export class NavigationComponent implements OnInit {
 
-  private _profile;
+  private _user;
 
   constructor(private _auth: Auth, 
                 private _profileService: ProfileService,
                   private _router: Router) {}
 
   ngOnInit() {
-    this._profile = JSON.parse(localStorage.getItem('profile'));
+    this._user = JSON.parse(localStorage.getItem('profile'));
   }
 
-
+  logout() {
+    this._user = null;
+  }
 }

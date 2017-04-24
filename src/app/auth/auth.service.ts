@@ -8,7 +8,7 @@ declare var Auth0Lock: any;
 @Injectable()
 export class Auth {
   // Configure Auth0
-  private _lock = new Auth0Lock('3Oozr1NYspJYRuuJIUQDFDYsnjnS0OyG', 'iwangb.eu.auth0.com', {auth: { redirect: false }});
+  private _lock = new Auth0Lock('3Oozr1NYspJYRuuJIUQDFDYsnjnS0OyG', 'iwangb.eu.auth0.com', {}); //auth: { redirect: false }
 
   constructor(private _router: Router) {
     // Add callback for lock `authenticated` event
@@ -20,6 +20,7 @@ export class Auth {
         localStorage.setItem('id_token', authResult.idToken);
         localStorage.setItem('profile', JSON.stringify(profile));
         _router.navigate(['profile']);
+        location.reload();
       });
     });
   }
@@ -39,5 +40,8 @@ export class Auth {
     // Remove token from localStorage
     localStorage.removeItem('id_token');
     localStorage.removeItem('profile');
+    this._router.navigate(['frontpage']);
+    location.reload();
   }
+
 }

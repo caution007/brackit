@@ -1,3 +1,130 @@
-<p>
-  team works!
-</p>
+<div id="wrap">
+    <div class="container">
+        <div class="row" *ngIf="_team">
+            <div class="col-lg-12">
+                <div>
+                    <h2 class="page-header">{{_team.getName()}} </h2>
+                </div>
+            </div>
+            <div class="col-lg-12">
+              <ul id="teamTabs" class="nav nav-tabs nav-justified">
+                <li class="active"><a href="#information-tab" data-toggle="tab"><i class="fa fa-tree"></i> Information</a>
+                </li>
+                <li class=""><a href="#members-tab" data-toggle="tab"><i class="fa fa-tree"></i> Members</a>
+                </li>
+                <li class=""><a href="#tournaments-tab" data-toggle="tab"><i class="fa fa-tree"></i> Tournaments</a>
+                </li>
+                <li class=""><a href="#fixtures-tab" data-toggle="tab"><i class="fa fa-tree"></i> Fixtures</a>
+                </li>
+                <li class=""><a href="#results-tab" data-toggle="tab"><i class="fa fa-tree"></i> Results</a>
+                </li>
+                <li class="" *ngIf="_auth.authenticated() && !_inTeam"><a href="#join-tab" data-toggle="tab"><i class="fa fa-tree"></i> Join</a>
+                </li>
+              </ul>
+              
+              <div id="teamTabs" class="tab-content">
+                <div class="tab-pane fade active in" id="information-tab">
+                    <div>
+                        <h4>Information</h4>
+                        <span></span> 
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="members-tab">
+                    <h4>Members</h4>
+                    <div class="col-md-3 col-sm-6" *ngFor="let member of _team.getMembers()">
+                        <div class="panel panel-default text-center" >
+                            <div class="panel-heading" >
+                                <span class="fa-stack fa-5x">
+                                    <div class="container">
+                                        <img class="img-responsive" src="https://hydra-media.cursecdn.com/lol.gamepedia.com/thumb/d/db/Fnaticlogo.png/120px-Fnaticlogo.png?version=7ee621d9b400c17028aa6065104ff99d">
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="panel-body">
+                                <h5>{{member.firstName}}</h5>
+                                <h4>"<a (click)="navToPlayer(member._id)">{{member.username}}</a>"</h4>
+                                <h5>{{member.familyName}}</h5>
+                                <h6>{{member.role}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tournaments-tab">
+                    <div>
+                        <h4>Current Tournaments</h4>
+                         <table class="table table-hover">
+                              <thead>
+                                  <tr>
+                                      <th>Name</th>
+                                      <th>Type</th>
+                                      <th>Match Type</th>
+                                      <th>Postion</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                    </div>
+                    <div>
+                        <h4>Past Tournaments</h4>
+                         <table class="table table-hover">
+                              <thead>
+                                  <tr>
+                                      <th>Name</th>
+                                      <th>Type</th>
+                                      <th>Match Type</th>
+                                      <th>Postion</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="fixtures-tab">
+                    <div>
+                        <h4>Fixtures</h4>
+                        <span></span> 
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="results-tab">
+                    <div>
+                        <h4>Results</h4>
+                        <span></span> 
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="join-tab" *ngIf="_auth.authenticated() && !_inTeam">
+                    <div>
+                        <h4>Join</h4>
+                        <div class="form-group">
+                          <div class="col-md-3">
+                              <input name="pwInput" type="text" class="form-control input-md" [(ngModel)]="_joinPassword" >
+                          </div>
+                          <div class="col-md-3">
+                              <button id="joinButton" name="joinButton" class="btn btn-success" (click)="joinTournamentPlayer()">Join</button>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <!-- /.tabs -->
+            </div>
+            <!-- /.column -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+<!-- /.wrap -->

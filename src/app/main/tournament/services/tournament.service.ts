@@ -50,20 +50,31 @@ export class TournamentService {
       .map(res => res.json());
   }
 
+  getMatches(id) {
+    return this._http.get(this._url + '/tournament/matches/' + id)
+      .map(res => res.json());
+  }
+
   createTournament(tournament) {
     console.log(tournament);
     return this._http.post(this._url + '/tournament', {tournament})
       .map(res => res.json());
   }
 
-  joinTournament(tournId, type, id, name) {
+  joinTournament(tournId, type, id, name, cType) {
     let tournType = this._enumConverter.tournamentTypeToString(type);
-    return this._http.post(this._url + '/tournament/join', {tournId, tournType, id, name})
+    return this._http.post(this._url + '/tournament/join', {tournId, tournType, id, name, cType})
       .map(res => res.json());
   }
 
-  createFixtures(id, teams, type, mType) {
-    return this._http.post(this._url + '/fixtures', {id, teams, type, mType})
+  leaveTournament(tournId, cType, type, id) {
+    let tournType = this._enumConverter.tournamentTypeToString(type);
+    return this._http.post(this._url + '/tournament/leavetournament', {tournId, cType, tournType, id})
+      .map(res => res.json());
+  }
+
+  createFixtures(id, teams, type, mType, cType, rType, start, interval) {
+    return this._http.post(this._url + '/fixtures', {id, teams, type, mType, cType, rType, start, interval})
       .map(res => res.json());
   }
 

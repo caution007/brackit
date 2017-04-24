@@ -25,6 +25,9 @@ export class RoundRobinLeague extends Tournament{
                 complete: Boolean,
                 victor: String,
                 owner: String,
+                teamLimit: JSON,
+                fixtureInterval: Number,
+                game: String,
                 teams: Array<any>) {
         super(id, 
             name, 
@@ -40,7 +43,10 @@ export class RoundRobinLeague extends Tournament{
             started, 
             complete, 
             victor,
-            owner);    
+            owner,
+            teamLimit,
+            fixtureInterval,
+            game);    
         this._teams = teams;
     }
 
@@ -49,16 +55,11 @@ export class RoundRobinLeague extends Tournament{
     }
 
     getStandings() {
-        let table = [this._teams[0]];
-
-        for (let i = 1 ; i < this._teams.length  ; i++) {
-            for (let l = 0 ; l < table.length ; l++) {
-                if (this._teams[i].points > table[l].points) {
-                    table.splice(l, 0, this._teams[i]);
-                    break;
-                }
-            }
-        }
+        let table = this._teams;
+        
+        table.sort((a, b) => {
+            return b.points - a.points;
+        });
         
         return table;
     }

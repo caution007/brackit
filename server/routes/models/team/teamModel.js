@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 var teamSchema = new mongoose.Schema ({
   name: String,
   members: Array,
-  joinPassword: String
+  joinPassword: String,
+  tournaments: Array,
+  matches: Array
 }, {
   versionKey: false
 });

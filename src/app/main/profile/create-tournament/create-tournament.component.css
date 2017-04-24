@@ -2,3 +2,10 @@ table {
     border-collapse: separate; 
     border-spacing: 10px;
 }
+
+.typeahead-input,
+.typeahead-typeahead {
+    width: 450px;
+    padding: 8px;
+    border-radius: 5px;
+}

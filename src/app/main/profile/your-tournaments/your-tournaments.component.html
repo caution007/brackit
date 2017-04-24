@@ -3,8 +3,71 @@
     <h3 class="panel-title">Your Tournaments</h3>
   </div>
   <div class="panel-body">
-    <div class="row">
-      <button id="submitButton" name="submitButton" class="btn btn-success" (click)="_panelService.selectedPanel(1)">Save</button>
+    <div class="row" *ngIf="_yourTournaments">
+      <div class="col-lg-12">
+        <p *ngIf="_yourTournaments.length == 0">You don't own any tournaments yet.</p>
+      </div>
+      <div class="col-lg-12">
+        <h4>Started</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Participants</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let tournament of _yourTournaments">
+                <tr *ngIf="tournament.started && !tournament.complete">
+                    <td>{{tournament.name}}</td>
+                    <td>{{tournament.type}}</td>
+                    <td>{{tournament.teamLimit.current}}</td>
+                    <td><button type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-pencil"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+      <div class="col-lg-12">
+        <h4>Not Started</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Participants</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let tournament of _yourTournaments">
+                <tr *ngIf="!tournament.started && !tournament.complete">
+                    <td>{{tournament.name}}</td>
+                    <td>{{tournament.type}}</td>
+                    <td>{{tournament.teamLimit.current}}/{{tournament.teamLimit.max}}</td>
+                    <td><button type="button" class="btn btn-primary btn-sm" (click)="_panelService.selectedPanel(9, tournament._id)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+      <div class="col-lg-12">
+        <h4>Finished</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Participants</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let tournament of _yourTournaments">
+                <tr *ngIf="tournament.complete">
+                    <td>{{tournament.name}}</td>
+                    <td>{{tournament.type}}</td>
+                    <td>{{tournament.teamLimit.current}}/{{tournament.teamLimit.max}}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

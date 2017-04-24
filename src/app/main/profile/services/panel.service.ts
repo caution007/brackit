@@ -7,6 +7,8 @@ export class PanelService {
   private _panel = new BehaviorSubject(0);
   private _panelVal = this._panel.asObservable();
   
+  private _selectedId;
+
   constructor() { }
 
   getPanel() {
@@ -17,7 +19,12 @@ export class PanelService {
     this._panel.next(panel);
   }
 
-  selectedPanel(panel) {
+  selectedPanel(panel, id) {
+    this._selectedId = id;
     this.setPanel(panel);
+  }
+
+  getSelectedId() {
+    return this._selectedId;
   }
 }

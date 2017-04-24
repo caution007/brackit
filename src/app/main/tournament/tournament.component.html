@@ -3,7 +3,8 @@
         <div class="row" *ngIf="_tournament">
             <div class="col-lg-12">
                 <div>
-                    <h2 class="page-header">{{_tournament.getName()}} </h2>
+                    <h2>{{_tournament.getName()}}</h2>
+                    <h4>{{_tournament.getGame()}}</h4>
                 </div>
             </div>
             <div class="col-lg-12">
@@ -21,7 +22,12 @@
                     </li>
                     <li class=""><a href="#fixtures-tab" data-toggle="tab"><i class="fa fa-database"></i> Fixtures</a>
                     </li>
-                    <li class="" *ngIf="_auth.authenticated() && _tournament.getRegistrationType() == 1 && !_tournament.getStarted()"><a href="#signup-tab" data-toggle="tab"><i class="fa fa-database"></i> Signup</a>
+                    <li class=""><a href="#results-tab" data-toggle="tab"><i class="fa fa-database"></i> Results</a>
+                    </li>
+                    <li class="" *ngIf="_auth.authenticated() && _tournament.getRegistrationType() == 1 && !_tournament.getStarted()">
+                        <a href="#signup-tab" data-toggle="tab">
+                            <i class="fa fa-database"></i> <span *ngIf="_inTournament">Leave</span><span *ngIf="!_inTournament">Signup</span>
+                        </a>
                     </li>
                 </ul>
 
@@ -65,16 +71,18 @@
                                     </span>
                                 </div>
                                 <div class="panel-body" *ngIf="_teams">
-                                    <h4>{{_teams[_tournament.getTeams().indexOf(team)].name}}</h4>
+                                    <h4><a (click)='navToTeam(team.id)'>{{_teams[_tournament.getTeams().indexOf(team)].name}}</a></h4>
                                     <div class="dropdown">
                                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Players <span class="caret"></span></button>
-                                        <ul class="dropdown-menu" *ngFor="let player of _teams[_tournament.getTeams().indexOf(team)].members">
-                                            <li><a href="#"><i><img src="img/flags/_wales.png"></i> {{player.username}}</a></li>
+                                        <ul class="dropdown-menu">
+                                            <li *ngFor="let player of _teams[_tournament.getTeams().indexOf(team)].members">
+                                                <a (click)="navToPlayer(player.id)"><i><img src="img/flags/_wales.png"></i> {{player.username}}</a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="panel-body" *ngIf="_players">
-                                    <h4>{{_players[_tournament.getTeams().indexOf(team)].username}}</h4>
+                                    <h4><a (click)="navToPlayer(_players[_tournament.getTeams().indexOf(team)]._id)">{{_players[_tournament.getTeams().indexOf(team)].username}}</a></h4>
                                 </div>
                             </div>
                         </div>
@@ -112,34 +120,77 @@
                     </div>
                     <div class="tab-pane fade" id="fixtures-tab">
                         <h4>Fixtures</h4>
-                        <span *ngIf="!_tournament.started">Tournament has not started yet. Currently no fixtures.</span>
+                        <span *ngIf="!_tournament.getStarted()">Tournament has not started yet. Currently no fixtures.</span>
+                        <table class="table table-hover" *ngIf="_matches">
+                            <thead>
+                                <tr>
+                                    <th *ngIf="_tournament.getCompetitorType() == 1">Team</th>
+                                    <th *ngIf="_tournament.getCompetitorType() == 0">Player</th>
+                                    <th></th>
+                                    <th *ngIf="_tournament.getCompetitorType() == 1">Team</th>
+                                    <th *ngIf="_tournament.getCompetitorType() == 0">Player</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let fixture of _matches.fixtures">
+                                    <td>{{fixture.partakers[0].name}}</td>
+                                    <td> VS </td>
+                                    <td>{{fixture.partakers[1].name}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="tab-pane fade" id="signup-tab">
+                    <div class="tab-pane fade" id="results-tab">
+                        <h4>Results</h4>
+                        <span *ngIf="!_tournament.getStarted()">Tournament has not started yet. Currently no results.</span>
+                        <table class="table table-hover" *ngIf="_matches">
+                            <thead>
+                                <tr>
+                                    <th *ngIf="_tournament.getCompetitorType() == 1">Team</th>
+                                    <th *ngIf="_tournament.getCompetitorType() == 0">Player</th>
+                                    <th>Score</th>
+                                    <th>Score</th>
+                                    <th *ngIf="_tournament.getCompetitorType() == 1">Team</th>
+                                    <th *ngIf="_tournament.getCompetitorType() == 0">Player</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let result of _matches.results">
+                                    <td>{{result.partakers[0].name}}</td>
+                                    <td *ngIf="result.partakers[0].score < result.partakers[1].score"><font color="#E74C3C">{{result.partakers[0].score}}</font></td>
+                                    <td *ngIf="result.partakers[0].score > result.partakers[1].score"><font color="#18BC9C">{{result.partakers[0].score}}</font></td>
+                                    <td *ngIf="result.partakers[0].score == result.partakers[1].score"><font color="#2568CA">{{result.partakers[0].score}}</font></td>
+                                    <td *ngIf="result.partakers[0].score < result.partakers[1].score"><font color="#18BC9C">{{result.partakers[1].score}}</font></td>
+                                    <td *ngIf="result.partakers[0].score > result.partakers[1].score"><font color="#E74C3C">{{result.partakers[1].score}}</font></td>
+                                     <td *ngIf="result.partakers[0].score == result.partakers[1].score"><font color="#2568CA">{{result.partakers[1].score}}</font></td>
+                                    <td>{{result.partakers[1].name}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="signup-tab" *ngIf="_auth.authenticated()">
                         <div>
                             <h4>Signup</h4>
                             <div *ngIf="_tournament.getCompetitorType() == 0">
                                 <a class="btn btn-success" *ngIf="!_inTournament" (click)="joinTournamentPlayer()">Join</a>
-                                <a class="btn btn-danger" *ngIf="_inTournament" >Leave</a>
+                                <a class="btn btn-danger" *ngIf="_inTournament" (click)="leaveTournament(_profile._id)">Leave</a>
                             </div>
                             <div *ngIf="_tournament.getCompetitorType() == 1">
                                 <div class="col-md-3 col-sm-6">
-                                <select class="form-control" id="select" *ngIf="!_inTournament">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                                <a class="btn btn-success" *ngIf="!_inTournament" (click)="joinTournamentTeam()">Join</a>
-                                <a class="btn btn-danger" *ngIf="_inTournament">Leave</a>
+                                    <select class="form-control" id="select" *ngIf="!_inTournament" [(ngModel)]="_selectedOwnedTeam">
+                                        <option *ngFor="let team of _ownedTeams" [ngValue]="team">{{team.name}}</option>
+                                    </select>
+                                    <a class="btn btn-success" *ngIf="!_inTournament" (click)="joinTournamentTeam()">Join</a>
+                                    <a class="btn btn-danger" *ngIf="_inTournament && _teamOwner" (click)="leaveTournament(_myTeam._id)">Leave</a>
+                                    <span *ngIf="_inTournament && !_teamOwner">Not the team owner, can't leave.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /.table -->
+                <!-- /.tabs -->
             </div>
-            <!-- /.tabs -->
+            <!-- /.column -->
         </div>
         <!-- /.row -->
     </div>
