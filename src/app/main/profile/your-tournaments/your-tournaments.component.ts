@@ -5,7 +5,6 @@ import { ProfileService } from '../services/profile.service';
 import { TournamentService } from '../../tournament/services/tournament.service';
 import { PanelService } from '../../profile/services/panel.service';
 import { Auth } from '../../../auth/auth.service';
-//<button id="submitButton" name="submitButton" class="btn btn-success" (click)="_panelService.selectedPanel(1)">Save</button>
 
 @Component({
   selector: 'app-your-tournaments',
@@ -18,6 +17,9 @@ export class YourTournamentsComponent implements OnInit {
   private _profile;
 
   private _yourTournaments: Array<any>;
+
+  private _startTournSub;
+  private _createFixturesSub;
 
   constructor(private _tournamentService: TournamentService,
                 private _panelService: PanelService,
@@ -39,7 +41,24 @@ export class YourTournamentsComponent implements OnInit {
         });
       });
     }
+  }
 
-    
+  startTournament(id, type, mType, cType, rType, start, interval) {
+    if(confirm("Are you sure you want to start the tournament?")) {
+      this._startTournSub = this._tournamentService.startTournament(id).subscribe(result => {
+        if (result.status == 'success') {
+          console.log(result);
+          this._startTournSub.unsubscribe();
+        }
+      });
+
+      this._createFixturesSub = this._tournamentService.createFixtures(id, type, mType, cType, rType, start, interval)
+        .subscribe(result => {
+          if (result.status == 'success') {
+          console.log(result);
+          this._createFixturesSub.unsubscribe();
+        }
+        })
+    }
   }
 }

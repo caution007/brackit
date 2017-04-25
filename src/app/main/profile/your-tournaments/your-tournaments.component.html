@@ -23,7 +23,9 @@
                     <td>{{tournament.name}}</td>
                     <td>{{tournament.type}}</td>
                     <td>{{tournament.teamLimit.current}}</td>
-                    <td><button type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-pencil"></i></button></td>
+                    <td>
+                        <button type="button" title="Edit Tournament" class="btn btn-primary btn-sm" (click)="_panelService.selectedPanel(9, tournament._id)"><i class="glyphicon glyphicon-pencil"></i></button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -44,7 +46,17 @@
                     <td>{{tournament.name}}</td>
                     <td>{{tournament.type}}</td>
                     <td>{{tournament.teamLimit.current}}/{{tournament.teamLimit.max}}</td>
-                    <td><button type="button" class="btn btn-primary btn-sm" (click)="_panelService.selectedPanel(9, tournament._id)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" (click)="_panelService.selectedPanel(9, tournament._id)"><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button type="button" title="Start Tournament" class="btn btn-success btn-sm" (click)="startTournament(
+                            tournament._id,
+                            tournament.type,
+                            tournament.matchType,
+                            tournament.competitorType,
+                            tournament.registrationType,
+                            tournament.start,
+                            tournament.fixtureInterval)"><i class="glyphicon glyphicon-play"></i></button>
+                    </td>
                 </tr>
             </tbody>
         </table>

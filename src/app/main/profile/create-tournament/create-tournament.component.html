@@ -115,7 +115,7 @@
                   <span>Keep the number even.</span>
               </div>
           </div>
-          <!-- /.name input -->
+          <!-- /.max participants input -->
           <div class="form-group">
               <label class="col-md-4 control-label" >Fixture Interval</label>
               <div class="col-md-2">
@@ -125,7 +125,7 @@
                   <span>The amount of days between each round of fixtures.</span>
               </div>
           </div>
-          <!-- /.name input -->
+          <!-- /.fixture interval input -->
           <div class="form-group">
               <label class="col-md-4 control-label" >Start Date</label>
               <div class="col-md-6">
@@ -140,21 +140,15 @@
               </div>
           </div>
           <!-- /.startTime input -->
-          <div class="form-group">
-              <label class="col-md-4 control-label" >Details</label>
-              <div class="col-md-8">
-                  <textarea name="informationinput" class="form-control" rows="5" [(ngModel)]="_information"></textarea>
-              </div>
-          </div>
-          <!-- /.information textarea -->
-          <div class="form-group">
-              <label class="col-md-4 control-label" >Rules</label>
-              <div class="col-md-8">
-                  <textarea name="rulesinput" class="form-control" rows="5" [(ngModel)]="_rules"></textarea>
-              </div>
-          </div>
-          <!-- /.rules textarea -->
-          <div class="form-group">
+    </form>
+
+    <span><strong>Information/Details</strong></span>
+    <app-tinymce [(ngModel)]='_information'></app-tinymce> <br />
+    <span><strong>Rules</strong></span>
+    <app-tinymce [(ngModel)]='_rules'></app-tinymce> <br />
+
+    <form class="form-horizontal">
+        <div class="form-group">
               <label class="col-md-4 control-label" ></label>
               <div class="col-md-8">
                   <button id="submitButton" name="submitButton" class="btn btn-success" (click)="test()">Save</button>

@@ -73,8 +73,14 @@ export class TournamentService {
       .map(res => res.json());
   }
 
-  createFixtures(id, teams, type, mType, cType, rType, start, interval) {
-    return this._http.post(this._url + '/fixtures', {id, teams, type, mType, cType, rType, start, interval})
+  startTournament(tournId) {
+    console.log(tournId);
+    return this._http.post(this._url + '/starttournament', {tournId})
+      .map(res => res.json());
+  }
+
+  createFixtures(id, type, mType, cType, rType, start, interval) {
+    return this._http.post(this._url + '/fixtures', {id, type, mType, cType, rType, start, interval})
       .map(res => res.json());
   }
 

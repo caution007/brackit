@@ -5,6 +5,7 @@ import { HttpModule, Http, RequestOptions } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { provideAuth, AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Typeahead } from 'ng2-typeahead';
+import { TinymceModule } from 'angular2-tinymce';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './auth/auth.guard';
@@ -79,7 +80,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     BrowserModule,
     FormsModule,
     HttpModule,
-    AppRoutingModule
+    AppRoutingModule,
+    TinymceModule.withConfig({})
   ],
   providers: [ 
     TournamentService,

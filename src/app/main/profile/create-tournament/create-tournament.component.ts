@@ -15,7 +15,6 @@ import { Games } from '../../tournament/model/Games';
   styleUrls: ['./create-tournament.component.css']
 })
 export class CreateTournamentComponent implements OnInit {
-
   private _games: Games;
   private _gameList;
   private _selectedGame;
@@ -24,10 +23,10 @@ export class CreateTournamentComponent implements OnInit {
   private _profile;
   private _types = ['Round Robin'];
   private _registrationTypes = ['List', 'Signup'];
-  private _fixtureSortTypes = ['Random', 'Seeded'];
+  private _fixtureSortTypes = ['Random'];
   private _competitorTypes = ['User', 'Team'];
   private _yesNoChoices = [['Yes', true], ['No', false]];
-  private _matchTypes = ['bo1', 'bo3', 'bo5'];
+  private _matchTypes = ['bo1'];
   private _gameChoices = [['Choose your own', true], ['Search for supported game', false]];
   private _gameChoice;
 
@@ -41,8 +40,8 @@ export class CreateTournamentComponent implements OnInit {
   private _startDate;
   private _startTime;
   private _matchType;
-  private _information;
-  private _rules;
+  private _information = '';
+  private _rules = '';
   private _owner;
   private _teamLimit;
   private _fixtureInterval;
@@ -144,15 +143,6 @@ export class CreateTournamentComponent implements OnInit {
     }
 
     return tournament;
-  }
-
-  fixtureTest() {
-    this._fixtureSub = this._tournamentService.createFixtures('58eec6286a8571229c6f1387', [['caution', '58d45a4b43db91243c132bf9'], ['tester', '58d483bd0d64161c48718dd4']], 'Round Robin', 'bo1', 'User', 'Signup', '2017-04-14T09:00:00.000Z', 7)
-      .subscribe(result => {
-        if (result.status == 'success') {
-          this._fixtureSub.unsubscribe();
-        }
-      });
   }
 
   test() {

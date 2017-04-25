@@ -95,7 +95,7 @@ function sortStartDate(a, b) {
 }
 
 // GET roundrobin tournament by tournament id //
-router.get('/roundrobin/:tournamentid', (req, res, next) => {
+router.get('/roundrobin/:tournamentid', (req, res) => {
   RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
     .then((tournament) => {
       res.status(200).json(tournament);
@@ -347,63 +347,110 @@ router.get('/tournaments/userid/:userId', (req, res, next) => {
     .error(console.error);
 })
 
+// START tournament //
+router.post('/starttournament', (req, res, next) => {
+  Tournament.findByIdAndUpdateAsync(
+    req.body.tournId,
+    {$set: {started: true}})
+    .then(() => {
+      res.json({ 'status': 'success' });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
+// Using Fisher-Yates shuffle //
+function shuffleArray(array) {
+  let index = array.length;
+  let randIndex;
+  let tempVal;
+
+  while(0 !== index) {
+    randIndex = Math.floor(Math.random() * index);
+    index -= 1;
+
+    tempVal = array[index];
+    array[index] = array[randIndex];
+    array[randIndex] = tempVal;
+  }
+
+  return array;
+}
+
 // POST fixtures, when tournament starts //
 router.post('/fixtures', (req, res) => {
-  let competitorLst = [];
-  for (let i = 0; i < req.body.teams.length; i++) {
-    competitorLst.push(req.body.teams[i]);
-  }
+  RoundRobinLeague.findAsync({ 'tournamentId': req.body.id })
+    .then((tournament) => {
+      tournament = tournament[0];
+      let teams = [];
+      for(let i = 0; i < tournament.teams.length; i++) {
+        teams.push([tournament.teams[i].name, tournament.teams[i].id]);
+      }
+      teams = shuffleArray(teams);
+      
+      let competitorLst = [];
+      for (let i = 0; i < teams.length; i++) {
+        competitorLst.push(teams[i]);
+      }
 
-  if (competitorLst.length % 2 != 0) { 
-    competitorLst.push("Bye"); 
-  }
+      if (competitorLst.length % 2 != 0) { 
+        competitorLst.push("Bye"); 
+      }
 
-  let fixturesNum = competitorLst.length - 1;
-  let fixturesHalf = competitorLst.length / 2;
+      let fixturesNum = competitorLst.length - 1;
+      let fixturesHalf = competitorLst.length / 2;
 
-  let competitors = competitorLst.slice();
-  competitors.splice(0, 1);
-  let competitorsNum = competitors.length;
-  console.log(competitors);
-  let haCounter = 0; // Home and Away counter for team 0
-  let date;
-  for (let i = 0; i < fixturesNum; i++) {
-    console.log("Fixture " + (i + 1));
+      let competitors = competitorLst.slice();
+      competitors.splice(0, 1);
+      let competitorsNum = competitors.length;
+      console.log(competitors);
+      let haCounter = 0; // Home and Away counter for team 0
+      let date;
+      for (let i = 0; i < fixturesNum; i++) {
+        console.log("Fixture " + (i + 1));
 
-    let team = i % competitorsNum;
+        let team = i % competitorsNum;
 
-    if (i == 0) {
-      date = req.body.start;
-    } else {
-      date = getAndSetDateFixture(date, req.body.interval);
-    }
-    
-    if (haCounter == 0) {
-      console.log(competitors[team] + " vs " + competitorLst[0] + " start: " + date);
+        if (i == 0) {
+          date = req.body.start;
+        } else {
+          date = getAndSetDateFixture(date, req.body.interval);
+        }
+        
+        if (haCounter == 0) {
+          console.log(competitors[team] + " vs " + competitorLst[0] + " start: " + date);
 
-      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[team], competitorLst[0], date, req.body.rType);
+          checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[team], competitorLst[0], date, req.body.rType);
 
-      haCounter = 1;
-    } else {
-      console.log(competitorLst[0] + " vs " + competitors[team] + " start: " + date);
+          haCounter = 1;
+        } else {
+          console.log(competitorLst[0] + " vs " + competitors[team] + " start: " + date);
 
-      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitorLst[0], competitors[team], date, req.body.rType);
+          checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitorLst[0], competitors[team], date, req.body.rType);
 
-      haCounter = 0;
-    }
+          haCounter = 0;
+        }
 
-    for (let l = 1; l < fixturesHalf; l++) {
-      let teamOne = (i + l) % competitorsNum;
-      let teamTwo = (i + competitorsNum - l) % competitorsNum;
-      console.log(competitors[teamOne] + " vs " + competitors[teamTwo] + " start: " + date)
+        for (let l = 1; l < fixturesHalf; l++) {
+          let teamOne = (i + l) % competitorsNum;
+          let teamTwo = (i + competitorsNum - l) % competitorsNum;
+          console.log(competitors[teamOne] + " vs " + competitors[teamTwo] + " start: " + date)
 
-      checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[teamOne], competitors[teamTwo], date,req.body.rType);
-    }
+          checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[teamOne], competitors[teamTwo], date,req.body.rType);
+        }
 
-    if (i == (fixturesNum - 1)) {
-      res.json({ 'status': 'success' });
-    }
-  }
+        if (i == (fixturesNum - 1)) {
+          res.json({ 'status': 'success' });
+        }
+      }
+        })
+        .catch((e) => {
+          res.json({ 'status': 'error', 'error': e });
+        })
+        .error(console.error);
+  
 });
 
 function getAndSetDateFixture(string, interval) {

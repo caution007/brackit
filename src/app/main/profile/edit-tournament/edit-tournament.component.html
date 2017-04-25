@@ -13,10 +13,10 @@
       </ul>
 
       <div id="tournamentTabs" class="tab-content">
-        <div class="tab-pane fade active in" id="tournament-tab">
+        <div class="tab-pane fade active in" id="tournament-tab" *ngIf="_tournament">
             <div>
                 <h4>Tournament</h4>
-                <form class="form-horizontal" *ngIf="_tournament">
+                <form class="form-horizontal">
                   <div class="form-group">
                       <label class="col-md-4 control-label" >Name</label>
                       <div class="col-md-6">
@@ -25,12 +25,54 @@
                   </div>
                   <!-- /.name input -->
                   <div class="form-group">
-                      <label class="col-md-4 control-label" >Type</label>
-                      <div class="col-md-6">
-                          <input name="typeinput" type="text" disabled="true" [(ngModel)]="_tournament.type" class="form-control input-md">
-                      </div>
+                    <label class="col-md-4 control-label">Date/Time</label>
+                    <div class="col-md-4">
+                        <input id="dateTimeInput" name="datetimeinput" class="form-control" type="datetime-local" [(ngModel)]="_dateTime">
+                    </div>
                   </div>
-                  <!-- /.type disabled input -->
+                  <!-- /.date and time -->
+                  <div class="form-group">
+                    <label class="col-md-4 control-label" >Include Draws?</label>
+                    <div class="col-md-4">
+                        <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_tournament.includeDraws">
+                            <option *ngFor="let choice of _trueFalse" [ngValue]="choice">{{choice}}</option>
+                        </select>
+                    </div>
+                  </div>
+                  <!-- /.includeDraws selector -->
+                  <div class="form-group">
+                    <label class="col-md-4 control-label" >Max Participants</label>
+                    <div class="col-md-2">
+                        <input name="playerlimitinput" type="number" [(ngModel)]="_tournament.teamLimit.max" class="form-control input-md">
+                    </div>
+                    <div class="col-md-4">
+                        <span>Keep the number even.</span>
+                    </div>
+                  </div>
+                  <!-- /.max participants input -->
+                  <div class="form-group">
+                    <label class="col-md-4 control-label" >Fixture Interval</label>
+                    <div class="col-md-2">
+                        <input name="fixintervalinput" type="number" [(ngModel)]="_tournament.fixtureInterval" class="form-control input-md">
+                    </div>
+                    <div class="col-md-4">
+                        <span>The amount of days between each round of fixtures.</span>
+                    </div>
+                  </div>
+                  <!-- /.fixture interval input -->
+                  
+                </form>
+                <span><strong>Information/Details</strong></span>
+                <app-tinymce [(ngModel)]='_tournament.information'></app-tinymce> <br />
+                <span><strong>Rules</strong></span>
+                <app-tinymce [(ngModel)]='_tournament.rules'></app-tinymce> <br />
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-8">
+                            <button id="editButton" name="editButton" class="btn btn-primary" (click)="editTournament()">Edit</button>
+                        </div>
+                    </div>
+                    <!-- /.start tournament -->
                 </form>
             </div>
         </div>
