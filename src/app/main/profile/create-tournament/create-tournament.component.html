@@ -28,7 +28,7 @@
           </div>
           <!-- /.choose your own game input -->
           <div class="form-group" *ngIf="_gameChoice && !_gameChoice[1]">
-              <label class="col-md-4 control-label" >Chooseeee</label>
+              <label class="col-md-4 control-label" >Choose</label>
               <div class="col-md-6">
                 <typeahead name="test"
                     [(ngModel)]="_selectedGame"
@@ -36,7 +36,7 @@
                     [searchProperty]="'searchText'" [displayProperty]="'name'"
                     [maxSuggestions]="2"
                     (suggestionSelected)="gameSelected($event)"
-                    placeholder="Begin typing a fruit">
+                    placeholder="Begin typing a game">
                     </typeahead>
                     <p>Selected {{ _game }}</p>
               </div>
@@ -218,7 +218,7 @@
             </div>
             <div class="col-md-12">
                 <div class="alert alert-danger fade in" *ngIf="!_rulesAlert">
-                    <strong>Whoops!</strong> Please submit something for the Tournament information.
+                    <strong>Whoops!</strong> Please submit something for the Tournament rules.
                 </div>              
             </div>
             <div class="col-md-12">
