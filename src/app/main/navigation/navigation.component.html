@@ -9,7 +9,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" routerLink="/" routerLinkActive="active"><img id="logo" src="img/brackit.png"></a>
+                <a class="navbar-brand" routerLink="/" routerLinkActive="active"><img id="logo" src="assets/img/brackit.png"></a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -41,12 +41,12 @@
                             <a class="link-button-color"><span class="glyphicon glyphicon-lock"></span> Log Out</a>
                         </button>
                     </li>
-                    <li class="hidden-sm hidden-xs">
+                    <li class="hidden-sm hidden-xs" *ngIf="!_noSearch">
                         <form class="navbar-form navbar-left" role="search">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search">
+                                <input type="text" name="searchinput" class="form-control" placeholder="Search" [(ngModel)]="_search">
                             </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button type="submit" name="searchbutton" class="btn btn-default" (click)="setSearch()">Submit</button>
                         </form>
                     </li>
                 </ul>            

@@ -9,6 +9,7 @@ import { NotfoundComponent } from './main/notfound/notfound.component';
 import { ProfileComponent } from './main/profile/profile.component';
 import { PublicProfileComponent } from './main/profile/public-profile/public-profile.component';
 import { MatchComponent } from './main/match/match.component';
+import { SearchComponent } from './main/search/search.component';
 
 import { AuthGuard } from './auth/auth.guard';
 
@@ -21,6 +22,7 @@ const routes: Routes = [
     { path: "profile/:id", component: PublicProfileComponent },
     { path: "profile", component: ProfileComponent, canActivate: [AuthGuard] },
     { path: "match/:id", component: MatchComponent },
+    { path: "search", component: SearchComponent },
     { path: "404", component: NotfoundComponent },
     { path: "**", redirectTo: '/404' }
 ];

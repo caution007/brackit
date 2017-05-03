@@ -1057,4 +1057,20 @@ router.get('/match/:id', (req, res, next) => {
     .error(console.error);
 })
 
+
+// SEARCH //
+
+// SEARCH for tournaments //
+router.get('/search/tournaments/:search', (req, res) => {
+  Tournament.findAsync({ 'name': {'$regex': req.params.search, '$options': 'i'} })
+    .then((tournaments) => {
+      console.log(tournaments);
+      res.json({ 'status': 'success', 'tournaments': tournaments });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
 module.exports = router;

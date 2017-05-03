@@ -1,0 +1,61 @@
+<div id="wrap">
+    <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+          </div>
+          <div class="col-md-4">
+            <input class="form-control" name="searchinput" type="text" [(ngModel)]="_searchQuery" placeholder="Search">
+          </div>
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-primary" (click)="search(0, _searchQuery)">Search</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul id="searchTabs" class="nav nav-tabs nav-justified">
+                <li class="active"><a href="#tournaments-tab" data-toggle="tab"><i class="fa fa-tree"></i> Tournaments</a>
+                </li>
+                <li><a href="#teams-tab" data-toggle="tab"><i class="fa fa-tree"></i> Teams</a>
+                </li>
+                <li><a href="#members-tab" data-toggle="tab"><i class="fa fa-tree"></i> Members</a>
+                </li>
+            </ul>
+
+            <div id="searchTabs" class="tab-content">
+              <div class="tab-pane fade active in" id="tournaments-tab">
+                  <div>
+                      <h4>Tournaments</h4>
+                  </div>
+                  <span *ngIf="_searchList && _searchList.tournaments.length == 0">Nothing can be found.</span>
+                  <table class="table table-hover" *ngIf="_searchList && _searchList.tournaments && _searchList.tournaments.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Tournament</th>
+                            <th>Type</th>
+                            <th>Registration Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let tournament of _searchList.tournaments' class='tourn-row'>
+                          <td>{{ tournament.name }}</td>
+                          <td>{{ tournament.type }}</td>
+                          <td>{{ tournament.registrationType }}</td>
+                        </tr>
+                    </tbody>
+                  </table>
+              </div>
+              <div class="tab-pane fade" id="teams-tab">
+                  <div>
+                      <h4>Teams</h4>
+                  </div>
+              </div>
+              <div class="tab-pane fade" id="members-tab">
+                  <div>
+                      <h4>Members</h4>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
