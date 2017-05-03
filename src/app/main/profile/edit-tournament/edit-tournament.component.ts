@@ -17,7 +17,14 @@ export class EditTournamentComponent implements OnInit {
 
   private _tournament;
   private _tournamentType;
+  private _matches;
   private _dateTime;
+
+  private _scoreOne;
+  private _scoreTwo;
+
+  private _getMatchesSub;
+  private _submitResultSub;
 
   constructor(private _panelService: PanelService,
                 private _tournamentService: TournamentService) { 
@@ -28,22 +35,71 @@ export class EditTournamentComponent implements OnInit {
     let id = this._panelService.getSelectedId();
     this._tournamentService.getTournament(id).subscribe(parentTournament => {
       this._tournament = parentTournament;
-      this._tournamentService.getAllTournamentInfo(
-        this._enumConverter.tournamentTypeToEnum(parentTournament.type), 
-        parentTournament._id).subscribe(childTournament => {
+      this.getTournamentType(parentTournament.type, parentTournament._id);
+      if (this._tournament.started) {
+        this.getMatches(parentTournament._id);
+      }
+    });
+  }
+
+  getMatches(id) {
+    console.log('hello');
+    this._getMatchesSub = this._tournamentService.getMatches(id).subscribe(result => {
+      this._matches = result.matches;
+      console.log(this._matches);
+
+      if (result.status == 'success') {
+        this._getMatchesSub.unsubscribe();
+      }
+
+    })
+  }
+
+  getTournamentType(type, id) {
+    this._tournamentService.getAllTournamentInfo(
+        this._enumConverter.tournamentTypeToEnum(type), 
+        id).subscribe(childTournament => {
           this._tournamentType = childTournament;
           this._dateTime = this._tournament.start.slice(0, -5);
           console.log(this._dateTime);
           console.log(this._tournament);
           console.log(this._tournamentType);
         });
-    });
   }
 
-  startTournament() {
-    if(confirm("Are you sure you want to start the tournament?")) {
-      console.log("Implement delete functionality here");
+  editTournament(tournament) {
+    if(confirm("Are you sure you want to edit the tournament?")) {
+      this._tournamentService.updateTournament(tournament).subscribe(result => {
+        console.log(result);
+      })
     }
-    console.log(this._tournament);
+  }
+
+  submitResult(
+    scoreOne, scoreTwo, matchTypeId, participantOneName, participantOneId, participantTwoName, participantTwoId) {
+    this._submitResultSub = this._tournamentService.submitResult(
+      scoreOne, 
+      scoreTwo, 
+      matchTypeId,
+      this._tournament._id,
+      this._tournament.includeDraws,
+      this._tournament.registrationType,
+      this._tournament.matchType,
+      null,
+      this._tournament.points,
+      [{
+        name: participantOneName,
+        id: participantOneId
+      },
+      {
+        name: participantTwoName,
+        id: participantTwoId
+      }
+      ]).subscribe(result => {
+        if(result.status == 'success') {
+          this._submitResultSub.unsubscribe();
+          location.reload();
+        }
+      })
   }
 }

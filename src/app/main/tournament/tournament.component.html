@@ -1,13 +1,13 @@
 <div id="wrap">
     <div class="container">
         <div class="row" *ngIf="_tournament">
-            <div class="col-lg-12">
+            <div class="col-md-12">
                 <div>
                     <h2>{{_tournament.getName()}}</h2>
                     <h4>{{_tournament.getGame()}}</h4>
                 </div>
             </div>
-            <div class="col-lg-12">
+            <div class="col-md-12">
 
                 <ul id="tournamentTabs" class="nav nav-tabs nav-justified">
                     <li class="active"><a href="#information-tab" data-toggle="tab"><i class="fa fa-tree"></i> Information</a>
@@ -131,9 +131,14 @@
                                     <th *ngIf="_tournament.getCompetitorType() == 0">Player</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr *ngFor="let fixture of _matches.fixtures">
-                                    <td>{{fixture.partakers[0].name}}</td>
+                            <tbody *ngFor="let fixture of _matches.fixtures">
+                                <tr id="fixtureRow" *ngIf="_tournament.getRegistrationType() == 1" (click)='navToMatch(fixture._id)'>
+                                    <td >{{fixture.partakers[0].name}}</td>
+                                    <td> VS </td>
+                                    <td>{{fixture.partakers[1].name}}</td>
+                                </tr>
+                                <tr *ngIf="_tournament.getRegistrationType() == 0">
+                                    <td >{{fixture.partakers[0].name}}</td>
                                     <td> VS </td>
                                     <td>{{fixture.partakers[1].name}}</td>
                                 </tr>

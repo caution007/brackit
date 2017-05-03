@@ -53,11 +53,11 @@ export class TournamentComponent implements OnInit {
     this._activatedRoute.params.subscribe((params: Params) => {
       this._paramID = params['id'];
     })
-
+    
     if (this._auth.authenticated()) {
-      this._profileService.getProfile(this._user.user_id).subscribe(profile => {
-        if (profile.length == 1) {
-          this._profile = profile[0];
+      this._profileService.getProfile(this._user.user_id, this._user.username).subscribe(profile => {
+        if (profile.profile.length == 1) {
+          this._profile = profile.profile[0];
         }
       });
     }
@@ -80,7 +80,9 @@ export class TournamentComponent implements OnInit {
 
       if (this._tournament.getRegistrationType() == RegistrationType.SIGNUP) {
         if (this._tournament.getCompetitorType() == CompetitorType.TEAM) {
+          
           this._tournamentService.getTeamsAndPlayers(this._tournament.getId()).subscribe(teams => {
+            console.log('dddd');
             this._teams = teams;
             console.log(this._teams);
             if (this._auth.authenticated()) {
@@ -103,8 +105,8 @@ export class TournamentComponent implements OnInit {
       }
 
       if(this._tournament.getStarted()) {
-        this._tournamentService.getMatches(this._tournament.getId()).subscribe(matches => {
-          this._matches = matches;
+        this._tournamentService.getMatches(this._tournament.getId()).subscribe(result => {
+          this._matches = result.matches;
           console.log(this._matches);
         })
       }
@@ -191,6 +193,10 @@ export class TournamentComponent implements OnInit {
 
   navToPlayer(selectedPlayerID) {
     this._router.navigate(['/profile', selectedPlayerID]);
+  }
+
+  navToMatch(selectedMatchID) {
+    this._router.navigate(['/match', selectedMatchID]);
   }
 
 }

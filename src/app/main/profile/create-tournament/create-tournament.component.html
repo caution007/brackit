@@ -127,6 +127,18 @@
           </div>
           <!-- /.fixture interval input -->
           <div class="form-group">
+              <label class="col-md-4 control-label" >Points</label>
+              <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">Win</span>
+                    <input type="number" name="winpointsinput" class="form-control" [(ngModel)]="_points.win"/>
+                    <span class="input-group-addon" *ngIf="_includeDraws[1]">Draw</span>
+                    <input type="number" name="drawpointsinput" class="form-control" *ngIf="_includeDraws[1]" [(ngModel)]="_points.draw"/>
+                </div>
+              </div>
+          </div>
+          <!-- /.points input -->
+          <div class="form-group">
               <label class="col-md-4 control-label" >Start Date</label>
               <div class="col-md-6">
                   <input name="startdateinput" class="form-control" type="date" [(ngModel)]="_startDate">
@@ -148,6 +160,88 @@
     <app-tinymce [(ngModel)]='_rules'></app-tinymce> <br />
 
     <form class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_nameAlert">
+                    <strong>Whoops!</strong> There seems to be a problem with the Tournament name you entered.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_gameAlert">
+                    <strong>Whoops!</strong> Please choose a game for the Tournament.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_typeAlert">
+                    <strong>Whoops!</strong> Please choose a Tournament type.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_registrationTypeAlert">
+                    <strong>Whoops!</strong> Please choose a Tournament registration type.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_fixtureSortTypeAlert">
+                    <strong>Whoops!</strong> Please choose a Tournament fixture type.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_competitorTypeAlert">
+                    <strong>Whoops!</strong> Please choose a Tournament competitor type.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_includeDrawsAlert">
+                    <strong>Whoops!</strong> Please choose if the Tournament will include draws.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_startDateAlert">
+                    <strong>Whoops!</strong> There seems to be a problem with the Tournament start date you entered.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_startTimeAlert">
+                    <strong>Whoops!</strong> There seems to be a problem with the Tournament start time you entered.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_matchTypeAlert">
+                    <strong>Whoops!</strong> Please choose a Tournament match type.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_informationAlert">
+                    <strong>Whoops!</strong> Please submit something for the Tournament information.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_rulesAlert">
+                    <strong>Whoops!</strong> Please submit something for the Tournament information.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_teamLimitAlert">
+                    <strong>Whoops!</strong> Please choose a Tournament team limit.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_fixtureIntervalAlert">
+                    <strong>Whoops!</strong> Please choose an interval between fixtures.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_pointsWinAlert">
+                    <strong>Whoops!</strong> Please choose the amount of points a team gets from a win.
+                </div>              
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger fade in" *ngIf="!_pointsDrawAlert">
+                    <strong>Whoops!</strong> Please choose the amount of points a team gets from a draw.
+                </div>              
+            </div>
+          </div>
         <div class="form-group">
               <label class="col-md-4 control-label" ></label>
               <div class="col-md-8">

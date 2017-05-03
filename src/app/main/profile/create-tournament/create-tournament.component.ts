@@ -46,10 +46,31 @@ export class CreateTournamentComponent implements OnInit {
   private _teamLimit;
   private _fixtureInterval;
   private _game;
+  private _points = {win: '', draw: ''};
 
   private _createMsg = '';
 
   private _fixtureSub;
+  private _createTournSub;
+
+  // ALERTS //
+  private _nameAlert = true;
+  private _typeAlert = true;
+  private _registrationTypeAlert = true;
+  private _fixtureSortTypeAlert = true;
+  private _competitorTypeAlert = true;
+  private _includeDrawsAlert = true;
+  private _startDateAlert = true;
+  private _startTimeAlert = true;
+  private _matchTypeAlert = true;
+  private _informationAlert = true;
+  private _rulesAlert = true;
+  private _ownerAlert = true;
+  private _teamLimitAlert = true;
+  private _fixtureIntervalAlert = true;
+  private _gameAlert = true;
+  private _pointsWinAlert = true;
+  private _pointsDrawAlert = true;
 
   constructor(private _tournamentService: TournamentService, 
                 private _profileService: ProfileService) {
@@ -60,9 +81,9 @@ export class CreateTournamentComponent implements OnInit {
   ngOnInit() {
     this._gameList = this._games.getGameList();
     console.log(this._gameList);
-    this._profileService.getProfile(this._user.user_id).subscribe(profile => {
-      if (profile.length == 1) {
-        this._profile = profile[0];
+    this._profileService.getProfile(this._user.user_id, this._user.username).subscribe(profile => {
+      if (profile.profile.length == 1) {
+        this._profile = profile.profile[0];
       }
       this._owner = this._profile._id;
     });
@@ -73,28 +94,121 @@ export class CreateTournamentComponent implements OnInit {
   }
 
   createTournament() {
-    if(this.nameCheck() && 
-      this._type && 
-      this._registrationType &&
-      this._fixtureSortType &&
-      this._competitorType &&
-      this._includeDraws &&
-      this._startDate &&
-      this._startTime &&
-      this._matchType &&
-      this._information &&
-      this._rules &&
-      this._owner &&
-      this.checkIfEven(this._teamLimit) &&
-      this._fixtureInterval &&
-      this._game) {
-        console.log(this.makeTournament());
-        this._tournamentService.createTournament(this.makeTournament()).subscribe(() => {})
-        this._createMsg = '';
-    } else {
-      console.log(this.makeTournament());
-      this._createMsg = 'na mate';
+    let checks = 18;
+    let count = 0;
+
+    for (let i = 0; i < checks; i ++) {
+      if(this.createTournamentChecks(i)) {
+        count++;
+      } 
     }
+
+    if(count == checks) {
+      console.log(this.makeTournament());
+        this._createTournSub = this._tournamentService.createTournament(this.makeTournament()).subscribe(result => {
+          if(result.status == 'success') {
+            this._createTournSub.unsubscribe();
+          }
+        })
+    }
+  }
+
+  createTournamentChecks(check) {
+    let boolean;
+    switch(check) {
+      case 0:
+        boolean = this.booleanCheckReturn(this.nameCheck());
+        this._nameAlert = boolean;
+        break;
+      case 1:
+        boolean = this.booleanCheckReturn(this._type);
+        this._typeAlert = boolean;
+        break;
+      case 2:
+        boolean = this.booleanCheckReturn(this._registrationType);
+        this._registrationTypeAlert = boolean;
+        break;
+      case 3:
+        boolean = this.booleanCheckReturn(this._fixtureSortType);
+        this._fixtureSortTypeAlert = boolean;
+        break;
+      case 5:
+        boolean = this.booleanCheckReturn(this._competitorType);
+        this._competitorTypeAlert = boolean;
+        break;
+      case 6:
+        boolean = this.booleanCheckReturn(this._includeDraws);
+        this._includeDrawsAlert = boolean;
+        break;
+      case 7:
+        boolean = this.booleanCheckReturn(this._startDate);
+        this._startDateAlert = boolean;
+        break;
+      case 8:
+        boolean = this.booleanCheckReturn(this._startTime);
+        this._startTimeAlert = boolean;
+        break;
+      case 9:
+        boolean = this.booleanCheckReturn(this._matchType);
+        this._matchTypeAlert = boolean;
+        break;
+      case 10:
+        boolean = this.booleanCheckReturn(this._information);
+        this._informationAlert = boolean;
+        break;
+      case 11:
+        boolean = this.booleanCheckReturn(this._rules);
+        this._rulesAlert = boolean;
+        break;
+      case 12:
+        boolean = this.booleanCheckReturn(this._owner);
+        this._ownerAlert = boolean;
+        break;
+      case 13:
+        boolean = this.booleanCheckReturn(this.checkIfEven(this._teamLimit));
+        this._teamLimitAlert = boolean;
+        break;
+      case 14:
+        boolean = this.booleanCheckReturn(this._fixtureInterval);
+        this._fixtureIntervalAlert = boolean;
+        break;
+      case 15:
+        boolean = this.booleanCheckReturn(this._game);
+        this._gameAlert = boolean;
+        break;
+      case 16:
+        boolean = this.booleanCheckReturn(this._points.win);
+        this._pointsWinAlert = boolean;
+        break;
+      case 17:
+        boolean = this.booleanCheckReturn(this.checkIfDraw());
+        this._pointsDrawAlert= boolean;
+        break;
+    }
+    return boolean;
+  }
+
+  booleanCheckReturn(check) {
+    if(check) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkIfDraw() {
+    let boolean = false;
+
+    if(this._includeDraws[1]) {
+      if(this._points.draw) {
+        boolean = true;
+      }
+    } else if (!this._includeDraws[1]) {
+      this._points.draw = '';
+      boolean = true;
+    }
+
+    return boolean;
   }
 
   checkIfEven(check) {
@@ -133,7 +247,8 @@ export class CreateTournamentComponent implements OnInit {
       this._owner,
       this._teamLimit,
       this._fixtureInterval,
-      this._game
+      this._game,
+      this._points
     ];
 
     if (this._registrationType == 'List') {
@@ -150,6 +265,8 @@ export class CreateTournamentComponent implements OnInit {
     console.log(this._startTime);
     console.log(this._lstTeams);
     this.createTournament();
+    console.log(this._nameAlert);
+    console.log(this._type);
   }
 
 }

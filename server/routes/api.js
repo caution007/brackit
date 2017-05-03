@@ -46,6 +46,17 @@ router.get('/tournaments/:id', (req, res, next) => {
     .error(console.error);
 });
 
+// UPDATE tournament by id //
+router.put('/tournament/update/:_id', (req, res) => {
+  Tournament.findOneAndUpdateAsync({ _id: req.params._id }, req.body)
+    .then((tournament) => {
+      res.json({ 'status': 'success', 'tournament': tournament });
+    }).catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
 // GET tournaments by type //
 router.get('/tournaments/type/:type', (req, res, next) => {
   Tournament.findAsync({ 'type': req.params.type })
@@ -71,6 +82,7 @@ router.get('/tournament/matches/:id', (req, res) => {
               let newMatch = match[index].toObject();
               newMatch.victor = type[0].victor;
               newMatch.partakers = type[0].partakers;
+              newMatch.matchTypeId = type[0]._id;
 
               if(newMatch.complete) {
                 matches.results.push(newMatch);
@@ -82,7 +94,7 @@ router.get('/tournament/matches/:id', (req, res) => {
               if (count > (match.length - 1)) {
                 matches.fixtures.sort(sortStartDate);
                 matches.results.sort(sortStartDate);
-                res.status(200).json(matches);
+                res.json({ 'status': 'success', 'matches': matches });
               }
             })
         }(i))
@@ -116,23 +128,28 @@ router.get('/tournament/teams/:tournamentid', (req, res, next) => {
             .then((tt) => {
               let teams = [];
               let count = 0;
-              for (let i = 0; i < tt[0].teams.length; i++) {
-                (function(index) {
-                  Team.findAsync({ '_id': tt[0].teams[index].id })
-                    .then((tm) => {
-                      tm = tm[0].toObject();
-                      delete tm.joinPassword;
-                      teams.splice(index, 0, tm);
-                      count++;
-                      if (count > (tt[0].teams.length - 1)) {
-                        res.status(200).json(teams);
-                      }
-                    })
-                    .catch((e) => {
-                      res.json({ 'status': 'error', 'error': e });
-                    })
-                    .error(console.error);
-                }(i))
+              if (tt[0].teams.length == 0) {
+                res.status(200).json([]);
+              } else {
+                for (let i = 0; i < tt[0].teams.length; i++) {
+                  (function(index) {
+                    Team.findAsync({ '_id': tt[0].teams[index].id })
+                      .then((tm) => {
+                        tm = tm[0].toObject();
+                        delete tm.joinPassword;
+                        teams.splice(index, 0, tm);
+                        count++;
+                        
+                        if (count > (tt[0].teams.length - 1)) {
+                          res.status(200).json(teams);
+                        }
+                      })
+                      .catch((e) => {
+                        res.json({ 'status': 'error', 'error': e });
+                      })
+                      .error(console.error);
+                  }(i))
+                }
               }
             })
             .catch((e) => {
@@ -280,10 +297,11 @@ router.post('/tournament', (req, res) => {
     owner: req.body.tournament[11],
     teamLimit: teamLimit,
     fixtureInterval: req.body.tournament[13],
-    game: req.body.tournament[14]
+    game: req.body.tournament[14],
+    points: req.body.tournament[15]
   })
 
-  postTournamentType(req.body.tournament[1], req.body.tournament[2], req.body.tournament[15], tournament._id);
+  postTournamentType(req.body.tournament[1], req.body.tournament[2], req.body.tournament[16], tournament._id);
 
   tournament.saveAsync()
     .then((tournament) => {
@@ -379,6 +397,8 @@ function shuffleArray(array) {
   return array;
 }
 
+// MATCHES AND FIXTURES //
+
 // POST fixtures, when tournament starts //
 router.post('/fixtures', (req, res) => {
   RoundRobinLeague.findAsync({ 'tournamentId': req.body.id })
@@ -388,8 +408,9 @@ router.post('/fixtures', (req, res) => {
       for(let i = 0; i < tournament.teams.length; i++) {
         teams.push([tournament.teams[i].name, tournament.teams[i].id]);
       }
-      teams = shuffleArray(teams);
       
+      teams = shuffleArray(teams);
+
       let competitorLst = [];
       for (let i = 0; i < teams.length; i++) {
         competitorLst.push(teams[i]);
@@ -521,11 +542,266 @@ function bo1Model(teamOne, teamTwo, id, rType) {
     matchId: id,
     partakers: partakers,
     resultInput: resultInputObj,
-    victor: ""
+    victor: {}
   })
 
   return bo1;
 };
+//scoreOne, scoreTwo, matchId, tournId, incDraws, regType, matchType, participentCheck, points
+router.post('/matchresult', (req, res) => {
+  
+    switch(req.body.matchType) {
+      case 'bo1':
+        getMatchType(
+          req.body.matchId,
+          req.body.matchType, 
+          req.body.participentCheck, 
+          req.body.scoreOne, 
+          req.body.scoreTwo,
+          req.body.incDraws,
+          req.body.participents,
+          req.body.tournId,
+          req.body.points,
+          req.body.regType,
+          res);
+        break;
+    }
+})
+
+function getMatchType(
+  matchId, matchType, participentCheck, scoreOne, scoreTwo, incDraws, participents, tournId, points, regType, res) {
+  switch(matchType) {
+    case 'bo1':
+      Bo1.findByIdAsync( matchId )
+        .then((bo1) => {
+          console.log('bo1');
+          checkIfOpponentSubmittedResult(
+          matchId,
+          matchType, 
+          participentCheck, 
+          scoreOne, 
+          scoreTwo,
+          incDraws,
+          participents,
+          tournId,
+          bo1,
+          points,
+          regType,
+          res);
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .error(console.error);
+      break;
+  }
+}
+
+function checkIfOpponentSubmittedResult(
+  matchId, matchType, participentCheck, scoreOne, scoreTwo, incDraws, participents, tournId, match, points, regType, res) {
+  console.log('checkIfOpponentSubmittedResult');
+  switch(matchType) {
+    case 'bo1':
+      if (participentCheck == 0) {
+        console.log('participentCheck 0');
+        if (!match.resultInput.partakerTwo.scoreOne && !match.resultInput.partakerTwo.scoreTwo) {
+         submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res);
+        } else if (match.resultInput.partakerTwo.scoreOne && match.resultInput.partakerTwo.scoreTwo) {
+          officialResultCheck(
+            incDraws, scoreOne, scoreTwo, matchId, participentCheck, participents, tournId, points, res);
+        }
+      } else if (participentCheck == 1) {
+        console.log('participentCheck 1');
+        if (!match.resultInput.partakerOne.scoreOne && !match.resultInput.partakerOne.scoreTwo) {
+          console.log('true');
+         submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res);
+        } else if (match.resultInput.partakerOne.scoreOne && match.resultInput.partakerOne.scoreTwo) {
+          officialResultCheck(
+            incDraws, scoreOne, scoreTwo, matchId, participentCheck, participents, tournId, points, res);
+        }
+      }
+      break;
+  }
+}
+
+function officialResultCheck(
+  incDraws, scoreOne, scoreTwo, matchId, participentCheck, participents, tournId, points, res) {
+  Bo1.findByIdAsync(matchId)
+    .then((bo1) => {
+      if (participentCheck == 0) {
+        if((scoreOne == bo1.resultInput.partakerTwo.scoreOne) && (scoreTwo == bo1.resultInput.partakerTwo.scoreTwo)) {
+          submitOfficialResult(
+            matchId, scoreOne, scoreTwo, participentCheck, participents, tournId, points, res);
+        } else {
+          submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res);
+        }
+      } else if (participentCheck == 1) {
+        if((scoreOne == bo1.resultInput.partakerOne.scoreOne) && (scoreTwo == bo1.resultInput.partakerOne.scoreTwo)) {
+          submitOfficialResult(
+            matchId, scoreOne, scoreTwo, participentCheck, participents, tournId, points, res);
+        } else {
+          submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res);
+        }
+      }
+      
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+    .error(console.error);
+}
+
+function submitOfficialResult(
+  matchId, scoreOne, scoreTwo, participentCheck, participents, tournId, points, res) {
+  let victor = getVictor(scoreOne, scoreTwo, participents);
+  console.log(victor);
+  let myIndex = {}
+  Bo1.findOneAndUpdateAsync(
+    { '_id': matchId },
+    { $set: {'partakers.0.score': scoreOne, 'partakers.1.score': scoreTwo, 'victor': victor.victor} })
+      .then((bo1) => {
+        console.log(bo1);
+        Match.findByIdAndUpdateAsync(
+          bo1.matchId,
+          { $set: {'complete': true} }
+        )
+        .then((match) => {
+          res.json({ 'status': 'success', 'match': match });
+          submitTournamentPoints(tournId, scoreOne, scoreTwo, participents, points, victor);
+          tournamentFinishedCheck(tournId);
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .error(console.error);
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .error(console.error);
+}
+
+function submitTournamentPoints(tournId, scoreOne, scoreTwo, participents, points, victor) {
+  if(victor) {
+    RoundRobinLeague.findOneAndUpdateAsync(
+      { 'tournamentId': tournId, 'teams.id': victor.victor.id },
+      { $inc: {'teams.$.wins': 1, 'teams.$.points': points.win, 'teams.$.played': 1} })
+      .then(() => {
+        console.log(victor.loser.id);
+        RoundRobinLeague.findOneAndUpdateAsync(
+          { 'tournamentId': tournId, 'teams.id': victor.loser.id },
+          { $inc: {'teams.$.losses': 1, 'teams.$.played': 1} })
+          .then(() => {
+          })
+          .catch((e) => {
+            console.log(e);
+          })
+          .error(console.error);
+          })
+      .catch((e) => {
+        console.log(e);
+      })
+      .error(console.error);
+  } else if (!victor){
+    for(let i = 0; i < 2; i++) {
+      RoundRobinLeague.findOneAndUpdateAsync(
+        { 'tournamentId': tournId, 'teams.id': participents[i].id },
+        { $inc: {'teams.$.draws': 1, 'teams.$.points': points.draw, 'teams.$.played': 1} })
+        .then(() => {
+        }) 
+        .catch((e) => {
+          console.log(e);
+        })
+        .error(console.error);
+    }
+  }
+}
+
+function getVictor(scoreOne, scoreTwo, participents) {
+  let victor = {victor: null, loser: null};
+
+  if (scoreOne > scoreTwo) {
+    victor.victor = participents[0];
+    victor.loser = participents[1];
+  } else if (scoreOne < scoreTwo) {
+    victor.victor = participents[1];
+    victor.loser = participents[0];
+  } else if (scoreOne == scoreTwo) {
+    victor = false;
+  }
+
+  return victor;
+}
+
+function submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res) {
+  console.log('submitPotentialResult');
+  if (participentCheck == 0) {
+    Bo1.findOneAndUpdateAsync(
+      { '_id': matchId }, 
+      { $set: {
+        'resultInput.partakerOne.scoreOne': scoreOne,
+        'resultInput.partakerOne.scoreTwo': scoreTwo,
+        'resultInput.partakerTwo.scoreOne': '',
+        'resultInput.partakerTwo.scoreTwo': ''
+      } })
+        .then((bo1) => {
+          res.json({ 'status': 'success', 'matchType': bo1 });
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .error(console.error);
+  } else if (participentCheck == 1) {
+    console.log(scoreOne + ' ' + scoreTwo);
+    Bo1.findOneAndUpdateAsync(
+      { '_id': matchId }, 
+      { $set: {
+        'resultInput.partakerTwo.scoreOne': scoreOne, 
+        'resultInput.partakerTwo.scoreTwo': scoreTwo,
+        'resultInput.partakerOne.scoreOne': '',
+        'resultInput.partakerOne.scoreTwo': ''
+      } })
+        .then((bo1) => {
+          res.json({ 'status': 'success', 'matchType': bo1 });
+          console.log('done');
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .error(console.error);
+  }
+}
+
+function tournamentFinishedCheck(tournId) {
+  console.log('done');
+  Match.findAsync({ 'tournamentId': tournId })
+    .then((matches) => {
+      let count = 0;
+      
+      for (let i = 0; i < matches.length; i++) {
+        console.log(matches[i].complete);
+        if(matches[i].complete) {
+          count++;
+          console.log(count);
+        }
+      }
+      
+      if (count == matches.length) {
+        Tournament.findByIdAndUpdateAsync(
+          tournId,
+          { $set: {'complete': true} }
+        )
+        .catch((e) => {
+          console.log(e);
+        })
+        .error(console.error);
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+    .error(console.error);
+}
 
 // TEAM //
 
@@ -658,36 +934,39 @@ router.get('/ownedteams/:id', (req, res) => {
 // PROFILE //
 
 // GET profile by id, if it exists. If not create a new blank profile //
-router.get('/profile/:userId', (req, res, next) => {
-  Profile.findAsync({ 'userId': req.params.userId })
+router.post('/profile', (req, res, next) => {
+  Profile.findAsync({ 'userId': req.body.userId })
     .then((profile) => {
       if (underscore.isEmpty(profile)) {
-        profile = createProfile(req.params.userId, req.params.username);
+        profile = createProfile(req.body.userId, req.body.username);
+      } else {
+        res.json({ 'status': 'success', 'profile': profile });
       }
-      res.status(200).json(profile);
     })
     .catch(next)
     .error(console.error);
 });
 
 function createProfile(id, username) {
+  let date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+  console.log(username);
   let profile = new Profile({
     userId: id,
-    username: '',
+    username: username,
     firstName: '',
     familyName: '',
     tournaments: [],
+    joined: date,
     matches: []
   })
 
   profile.saveAsync()
     .then((profile) => {
+      res.json({ 'status': 'success', 'profile': profile });
     })
     .catch((e) => {
     })
     .error(console.error);
-
-  return profile;
 }
 
 // UPDATE profile, by id //

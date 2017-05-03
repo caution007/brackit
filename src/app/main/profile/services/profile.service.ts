@@ -15,8 +15,8 @@ export class ProfileService {
     this._url = _tournamentService.getAPIUrl();
   }
 
-  getProfile(id) {
-    return this._http.get(this._url + '/profile/' + id)
+  getProfile(userId, username) {
+    return this._http.post(this._url + '/profile', {userId, username})
       .map(res => res.json());
   }
 

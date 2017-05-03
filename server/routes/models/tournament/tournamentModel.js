@@ -13,11 +13,12 @@ var tournamentSchema = new mongoose.Schema ({
   rules: String,
   started: Boolean,
   complete: Boolean,
-  victor: String,
+  victor: Object,
   owner:  String,
   teamLimit: Object,
   fixtureInterval: Number,
-  game: String
+  game: String,
+  points: Object
 }, {
   versionKey: false
 });

@@ -1,6 +1,7 @@
 // Adapted from: http://plnkr.co/edit/UGzoPTCHlXKWrn4p8gd1?p=preview //
 //our root app component
-import { NgModule, Component, Compiler, ViewContainerRef, ViewChild, Input, ComponentRef, ComponentFactory, ComponentFactoryResolver, ChangeDetectorRef } from '@angular/core'
+import { NgModule, Component, Compiler, ViewContainerRef, ViewChild,
+   Input, ComponentRef, ComponentFactory, ComponentFactoryResolver, ChangeDetectorRef } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { FormsModule } from '@angular/forms'
 
@@ -12,24 +13,25 @@ import { FormsModule } from '@angular/forms'
 export class DclWrapper {
   @ViewChild('target', {read: ViewContainerRef}) target: ViewContainerRef;
   @Input() type;
-  cmpRef: ComponentRef<Component>;
-  private isViewInitialized:boolean = false;
+  private _cmpRef: ComponentRef<Component>;
+  private _isViewInitialized: Boolean = false;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, private compiler: Compiler) {}
+  constructor(private _componentFactoryResolver: ComponentFactoryResolver, 
+                private _compiler: Compiler) {}
 
   updateComponent() {
-    if(!this.isViewInitialized) {
+    if(!this._isViewInitialized) {
       return;
     }
     
-    if(this.cmpRef) {
+    if(this._cmpRef) {
       // when the `type` input changes we destroy a previously 
       // created component before creating the new one
-      this.cmpRef.destroy();
+      this._cmpRef.destroy();
     }
 
-    let factory = this.componentFactoryResolver.resolveComponentFactory(this.type);
-    this.cmpRef = this.target.createComponent(factory)
+    let factory = this._componentFactoryResolver.resolveComponentFactory(this.type);
+    this._cmpRef = this.target.createComponent(factory)
     // to access the created instance use
     // this.compRef.instance.someProperty = 'someValue';
     // this.compRef.instance.someOutput.subscribe(val => doSomething());
@@ -40,13 +42,13 @@ export class DclWrapper {
   }
 
   ngAfterViewInit() {
-    this.isViewInitialized = true;
+    this._isViewInitialized = true;
     this.updateComponent();  
   }
 
   ngOnDestroy() {
-    if(this.cmpRef) {
-      this.cmpRef.destroy();
+    if(this._cmpRef) {
+      this._cmpRef.destroy();
     }    
   }
 }

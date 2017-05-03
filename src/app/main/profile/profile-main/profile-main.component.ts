@@ -18,16 +18,10 @@ export class ProfileMainComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.profileService.getProfile(this._user.user_id).subscribe(profile => {
-      if (profile.length == 1) {
-        if(!profile[0].username) {
-          profile[0].username = this._user.username;
-          this.profileService.updateProfile(profile[0]._id, profile[0]).subscribe(profile => {
-            profile[0] = profile;
-          })
-        }
-        console.log(profile[0]);
-        this._profile = profile[0];
+    this.profileService.getProfile(this._user.user_id, this._user.username).subscribe(profile => {
+      if (profile.profile.length == 1) {
+        console.log(profile.profile[0]);
+        this._profile = profile.profile[0];
       }
     });
   }

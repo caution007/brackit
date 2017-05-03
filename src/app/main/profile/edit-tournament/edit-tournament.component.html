@@ -8,7 +8,7 @@
       <ul id="tournamentTabs" class="nav nav-tabs nav-justified">
         <li class="active"><a href="#tournament-tab" data-toggle="tab"><i class="fa fa-tree"></i> Tournament</a>
         </li>
-        <li class=""><a href="#fixtures-tab" data-toggle="tab"><i class="fa fa-tree"></i> Fixtures</a>
+        <li *ngIf="_tournament && _tournament.registrationType == 'List'" class=""><a href="#fixtures-tab" data-toggle="tab"><i class="fa fa-tree"></i> Fixtures</a>
         </li>
       </ul>
 
@@ -24,14 +24,14 @@
                       </div>
                   </div>
                   <!-- /.name input -->
-                  <div class="form-group">
+                  <div class="form-group" *ngIf="!_tournament.started">
                     <label class="col-md-4 control-label">Date/Time</label>
                     <div class="col-md-4">
                         <input id="dateTimeInput" name="datetimeinput" class="form-control" type="datetime-local" [(ngModel)]="_dateTime">
                     </div>
                   </div>
                   <!-- /.date and time -->
-                  <div class="form-group">
+                  <div class="form-group" *ngIf="!_tournament.started">
                     <label class="col-md-4 control-label" >Include Draws?</label>
                     <div class="col-md-4">
                         <select id="threshold" name="threshold" class="form-control" [(ngModel)]="_tournament.includeDraws">
@@ -40,7 +40,7 @@
                     </div>
                   </div>
                   <!-- /.includeDraws selector -->
-                  <div class="form-group">
+                  <div class="form-group" *ngIf="!_tournament.started">
                     <label class="col-md-4 control-label" >Max Participants</label>
                     <div class="col-md-2">
                         <input name="playerlimitinput" type="number" [(ngModel)]="_tournament.teamLimit.max" class="form-control input-md">
@@ -50,7 +50,7 @@
                     </div>
                   </div>
                   <!-- /.max participants input -->
-                  <div class="form-group">
+                  <div class="form-group" *ngIf="!_tournament.started">
                     <label class="col-md-4 control-label" >Fixture Interval</label>
                     <div class="col-md-2">
                         <input name="fixintervalinput" type="number" [(ngModel)]="_tournament.fixtureInterval" class="form-control input-md">
@@ -69,17 +69,37 @@
                 <form class="form-horizontal">
                     <div class="form-group">
                         <div class="col-md-8">
-                            <button id="editButton" name="editButton" class="btn btn-primary" (click)="editTournament()">Edit</button>
+                            <button id="editButton" name="editButton" class="btn btn-primary" (click)="editTournament(_tournament)">Edit</button>
                         </div>
                     </div>
                     <!-- /.start tournament -->
                 </form>
             </div>
         </div>
-        <div class="tab-pane fade" id="fixtures-tab">
+        <div class="tab-pane fade" id="fixtures-tab" *ngIf="_tournament && _tournament.registrationType == 'List'">
             <div>
-                <h4>Fixtures</h4>
-                <span></span> 
+                <h4>Enter Results</h4>
+                <table class="table table-hover" *ngIf="_matches">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let fixture of _matches.fixtures">
+                        <tr>
+                            <td>{{fixture.partakers[0].name}}<input name="scoreoneinput" id="scoreOne" type="text" class="form-control input-md"></td>
+                            <td>vs</td>
+                            <td>{{fixture.partakers[1].name}}<input name="scoreoneinput" id="scoreTwo" type="text" class="form-control input-md"></td>
+                            <td>
+                                <button type="button" title="Edit Tournament" class="btn btn-success btn-sm" 
+                                    (click)="submitResult(scoreOne, scoreTwo, fixture.matchTypeId, fixture.partakers[0].name, fixture.partakers[0].id, fixture.partakers[1].name, fixture.partakers[1].id)"><i class="fa fa-check"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
       </div>

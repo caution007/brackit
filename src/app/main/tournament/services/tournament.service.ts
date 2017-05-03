@@ -67,6 +67,11 @@ export class TournamentService {
       .map(res => res.json());
   }
 
+  updateTournament(tournament) {
+    return this._http.put(this._url + '/tournament/update/' + tournament._id, tournament)
+          .map(res => res.json());
+  }
+
   leaveTournament(tournId, cType, type, id) {
     let tournType = this._enumConverter.tournamentTypeToString(type);
     return this._http.post(this._url + '/tournament/leavetournament', {tournId, cType, tournType, id})
@@ -81,6 +86,11 @@ export class TournamentService {
 
   createFixtures(id, type, mType, cType, rType, start, interval) {
     return this._http.post(this._url + '/fixtures', {id, type, mType, cType, rType, start, interval})
+      .map(res => res.json());
+  }
+
+  submitResult(scoreOne, scoreTwo, matchId, tournId, incDraws, regType, matchType, participentCheck, points, participents) {
+    return this._http.post(this._url + '/matchresult', {scoreOne, scoreTwo, matchId, tournId, incDraws, regType, matchType, participentCheck, points, participents})
       .map(res => res.json());
   }
 

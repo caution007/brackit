@@ -4,7 +4,7 @@ var bo1Schema = new mongoose.Schema ({
   matchId: String,
   partakers: Array,
   resultInput: Object,
-  victor: String,
+  victor: Object,
 }, {
   versionKey: false
 });

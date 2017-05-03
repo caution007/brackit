@@ -41,8 +41,6 @@ import { TeamService } from './main/team/services/team.service';
 import { MatchService } from './main/match/services/match.service';
 import { Auth } from './auth/auth.service';
 
-
-
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp(new AuthConfig({
     tokenName: 'token',

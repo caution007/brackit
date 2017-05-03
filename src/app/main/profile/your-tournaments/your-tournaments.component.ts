@@ -30,9 +30,9 @@ export class YourTournamentsComponent implements OnInit {
 
   ngOnInit() {
     if (this._auth.authenticated()) {
-      this._profileService.getProfile(this._user.user_id).subscribe(profile => {
-        if (profile.length == 1) {
-          this._profile = profile[0];
+      this._profileService.getProfile(this._user.user_id, this._user.username).subscribe(profile => {
+        if (profile.profile.length == 1) {
+          this._profile = profile.profile[0];
         }
 
         this._tournamentService.getYourTournaments(this._profile._id).subscribe(tournaments => {

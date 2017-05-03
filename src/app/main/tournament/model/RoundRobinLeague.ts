@@ -23,11 +23,12 @@ export class RoundRobinLeague extends Tournament{
                 rules: String,
                 started: Boolean,
                 complete: Boolean,
-                victor: String,
+                victor: JSON,
                 owner: String,
                 teamLimit: JSON,
                 fixtureInterval: Number,
                 game: String,
+                points: JSON,
                 teams: Array<any>) {
         super(id, 
             name, 
@@ -46,7 +47,8 @@ export class RoundRobinLeague extends Tournament{
             owner,
             teamLimit,
             fixtureInterval,
-            game);    
+            game,
+            points);    
         this._teams = teams;
     }
 
