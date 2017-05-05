@@ -44,6 +44,7 @@ export class TournamentFactory {
             tournJSON.fixtureInterval,
             tournJSON.game,
             tournJSON.points,
+            tournJSON.created,
             tournTypeJSON[0].teams
         );
     }

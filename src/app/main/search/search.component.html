@@ -7,17 +7,17 @@
             <input class="form-control" name="searchinput" type="text" [(ngModel)]="_searchQuery" placeholder="Search">
           </div>
           <div class="col-md-4">
-            <button type="submit" class="btn btn-primary" (click)="search(0, _searchQuery)">Search</button>
+            <button type="submit" class="btn btn-primary" (click)="search(_searchTab, _searchQuery)">Search</button>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <ul id="searchTabs" class="nav nav-tabs nav-justified">
-                <li class="active"><a href="#tournaments-tab" data-toggle="tab"><i class="fa fa-tree"></i> Tournaments</a>
+                <li class="active" (click)="search(0, _searchQuery)"><a href="#tournaments-tab" data-toggle="tab"><i class="fa fa-tree"></i> Tournaments</a>
                 </li>
-                <li><a href="#teams-tab" data-toggle="tab"><i class="fa fa-tree"></i> Teams</a>
+                <li (click)="search(1, _searchQuery)"><a href="#teams-tab" data-toggle="tab"><i class="fa fa-tree"></i> Teams</a>
                 </li>
-                <li><a href="#members-tab" data-toggle="tab"><i class="fa fa-tree"></i> Members</a>
+                <li (click)="search(2, _searchQuery)"><a href="#members-tab" data-toggle="tab"><i class="fa fa-tree"></i> Members</a>
                 </li>
             </ul>
 
@@ -26,8 +26,8 @@
                   <div>
                       <h4>Tournaments</h4>
                   </div>
-                  <span *ngIf="_searchList && _searchList.tournaments.length == 0">Nothing can be found.</span>
-                  <table class="table table-hover" *ngIf="_searchList && _searchList.tournaments && _searchList.tournaments.length > 0">
+                  <span *ngIf="_searchList && _searchTab == 0 && _searchList.tournaments.length == 0">Nothing can be found.</span>
+                  <table class="table table-hover" *ngIf="_searchList && _searchTab == 0 && _searchList.tournaments.length > 0">
                     <thead>
                         <tr>
                             <th>Tournament</th>
@@ -36,7 +36,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor='let tournament of _searchList.tournaments' class='tourn-row'>
+                        <tr *ngFor='let tournament of _searchList.tournaments' class='tourn-row' (click)="navToTournament(tournament._id)">
                           <td>{{ tournament.name }}</td>
                           <td>{{ tournament.type }}</td>
                           <td>{{ tournament.registrationType }}</td>
@@ -48,11 +48,37 @@
                   <div>
                       <h4>Teams</h4>
                   </div>
+                  <span *ngIf="_searchList && _searchTab == 1 && _searchList.teams.length == 0">Nothing can be found.</span>
+                  <table class="table table-hover" *ngIf="_searchList && _searchTab == 1 && _searchList.teams.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Team</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let team of _searchList.teams' class='tourn-row' (click)="navToTeam(team._id)">
+                          <td>{{ team.name }}</td>
+                        </tr>
+                    </tbody>
+                  </table>
               </div>
               <div class="tab-pane fade" id="members-tab">
                   <div>
                       <h4>Members</h4>
                   </div>
+                  <span *ngIf="_searchList && _searchTab == 2 && _searchList.members.length == 0">Nothing can be found.</span>
+                  <table class="table table-hover" *ngIf="_searchList && _searchTab == 2 && _searchList.members.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Members</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let member of _searchList.members' class='tourn-row' (click)="navToPlayer(member._id)">
+                          <td>{{ member.username }}</td>
+                        </tr>
+                    </tbody>
+                  </table>
               </div>
             </div>
           </div>

@@ -69,6 +69,24 @@ router.get('/tournaments/type/:type', (req, res, next) => {
     .error(console.error);
 });
 
+// GET newest tournaments //
+router.get('/newesttournaments', (req, res) => {
+  Tournament.findAsync({})
+    .then((tournaments) => {
+      tournaments.sort(sortCreatedDate);
+      let newTournaments = [tournaments[0], tournaments[1], tournaments[2]]
+      res.json({ 'status': 'success', 'tournaments': newTournaments });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+});
+
+function sortCreatedDate(a, b) {
+  return new Date(b.created) - new Date(a.created);
+}
+
 // GET fixtures for a given tournament, by tournament id //
 router.get('/tournament/matches/:id', (req, res) => {
   Match.findAsync({ 'tournamentId': req.params.id })
@@ -279,6 +297,7 @@ router.post('/tournament', (req, res) => {
   console.log(req.body.tournament);
   let start = req.body.tournament[6] + "T" + req.body.tournament[7] + ":00Z";
   let teamLimit = {current: 0, max: req.body.tournament[12]};
+  let date = new Date().toLocaleString();
 
   let tournament = new Tournament({
     name: req.body.tournament[0],
@@ -298,7 +317,8 @@ router.post('/tournament', (req, res) => {
     teamLimit: teamLimit,
     fixtureInterval: req.body.tournament[13],
     game: req.body.tournament[14],
-    points: req.body.tournament[15]
+    points: req.body.tournament[15],
+    created: date
   })
 
   postTournamentType(req.body.tournament[1], req.body.tournament[2], req.body.tournament[16], tournament._id);
@@ -1066,6 +1086,42 @@ router.get('/search/tournaments/:search', (req, res) => {
     .then((tournaments) => {
       console.log(tournaments);
       res.json({ 'status': 'success', 'tournaments': tournaments });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
+// SEARCH for teams //
+router.get('/search/teams/:search', (req, res) => {
+  Team.findAsync({ 'name': {'$regex': req.params.search, '$options': 'i'} })
+    .then((teams) => {
+      for (let i = 0; i < teams.length; i++) {
+        team = teams[i].toObject();
+        delete team.joinPassword;
+        teams[i] = team;
+      }
+      console.log(teams);
+      res.json({ 'status': 'success', 'teams': teams });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
+// SEARCH for members //
+router.get('/search/members/:search', (req, res) => {
+  Profile.findAsync({ 'username': {'$regex': req.params.search, '$options': 'i'} })
+    .then((members) => {
+      for (let i = 0; i < members.length; i++) {
+        member = members[i].toObject();
+        delete member.userId;
+        members[i] = member;
+      }
+      console.log(members);
+      res.json({ 'status': 'success', 'members': members });
     })
     .catch((e) => {
       res.json({ 'status': 'error', 'error': e });

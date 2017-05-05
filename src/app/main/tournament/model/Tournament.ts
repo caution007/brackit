@@ -25,6 +25,7 @@ export class Tournament {
     private _fixtureInterval: Number;
     private _game: String;
     private _points: JSON;
+    private _created: Date;
 
     constructor(id: String,
                 name: String,
@@ -44,7 +45,8 @@ export class Tournament {
                 teamLimit: JSON,
                 fixtureInterval: Number,
                 game: String,
-                points: JSON) {
+                points: JSON,
+                created: Date) {
 
         this._id = id;
         this._name = name;
@@ -65,6 +67,7 @@ export class Tournament {
         this._fixtureInterval = fixtureInterval;
         this._game = game;
         this._points = points;
+        this._created = created;
     }
     
     getId() {

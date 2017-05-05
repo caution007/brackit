@@ -18,7 +18,8 @@ var tournamentSchema = new mongoose.Schema ({
   teamLimit: Object,
   fixtureInterval: Number,
   game: String,
-  points: Object
+  points: Object,
+  created: Date
 }, {
   versionKey: false
 });

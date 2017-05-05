@@ -2,54 +2,11 @@
     </header>
 
 <div class="container">
-
-        <!-- Marketing Icons Section -->
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">
                     Brackit the Tournament generator
                 </h1>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4> Lorem Ipsum</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-                        
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4> Lorem Ipsum</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-                        
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4> Lorem Ipsum</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /.row -->
-
-        <!-- Features Section -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Doloremque non</h2>
             </div>
             <div class="col-md-6">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit:</p>
@@ -68,8 +25,28 @@
             </div>
         </div>
         <!-- /.row -->
-
-        <hr>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header">New Tournaments</h2>
+            </div>
+            <div class="col-md-4" *ngFor="let tournament of _newTournaments">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4> {{tournament.name}}</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p><strong>Details:</strong></p>
+                        <ul class="list-unstyled">
+                            <li><strong>Game:</strong>  {{tournament.game}}</li>
+                            <li><strong>Type:</strong>  {{tournament.type}}</li>
+                            <li><strong>Registration:</strong>  {{tournament.registrationType}}</li>
+                            <li><strong>Starts:</strong>  {{tournament.start}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
 
         <hr>
 

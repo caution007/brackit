@@ -41,4 +41,14 @@ export class SearchService {
       .map(res => res.json());
   }
 
+  searchTeams(search) {
+    return this._http.get(this._url + '/search/teams/' + search)
+      .map(res => res.json());
+  }
+
+  searchmembers(search) {
+    return this._http.get(this._url + '/search/members/' + search)
+      .map(res => res.json());
+  }
+
 }

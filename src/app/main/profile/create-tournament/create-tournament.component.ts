@@ -87,6 +87,9 @@ export class CreateTournamentComponent implements OnInit {
       }
       this._owner = this._profile._id;
     });
+
+    
+    console.log(new Date().toLocaleString());
   }
 
   gameSelected(game) {
@@ -103,12 +106,13 @@ export class CreateTournamentComponent implements OnInit {
       } 
     }
 
-    if(count == checks) {
+    if(count == (checks - 1)) {
       console.log(this.makeTournament());
         this._createTournSub = this._tournamentService.createTournament(this.makeTournament()).subscribe(result => {
           if(result.status == 'success') {
             this._createTournSub.unsubscribe();
           }
+          location.reload();
         })
     }
   }

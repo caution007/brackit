@@ -144,6 +144,7 @@ export class TournamentComponent implements OnInit {
       this._user.username,
       this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType())).subscribe(result => {
         console.log(result);
+        location.reload();
       })
   }
 
@@ -155,6 +156,7 @@ export class TournamentComponent implements OnInit {
       this._selectedOwnedTeam.name,
       this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType())).subscribe(result => {
         console.log(result);
+        location.reload();
       })
     } else {
       console.log('Select A Team');
@@ -168,6 +170,7 @@ export class TournamentComponent implements OnInit {
       this._tournament.getType(),
       id).subscribe(result => {
         console.log(result);
+        location.reload();
       })
   }
 

@@ -35,6 +35,11 @@ export class TournamentService {
       .map(res => res.json());
   }
 
+  getNewTournaments() {
+    return this._http.get(this._url + '/newesttournaments')
+      .map(res => res.json());
+  }
+
   getYourTournaments(id) {
     return this._http.get(this._url + '/tournaments/userid/' + id)
       .map(res => res.json());

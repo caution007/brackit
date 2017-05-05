@@ -29,6 +29,7 @@ export class RoundRobinLeague extends Tournament{
                 fixtureInterval: Number,
                 game: String,
                 points: JSON,
+                created: Date,
                 teams: Array<any>) {
         super(id, 
             name, 
@@ -48,7 +49,8 @@ export class RoundRobinLeague extends Tournament{
             teamLimit,
             fixtureInterval,
             game,
-            points);    
+            points,
+            created);    
         this._teams = teams;
     }
 
