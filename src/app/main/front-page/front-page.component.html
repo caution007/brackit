@@ -21,7 +21,7 @@
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, omnis doloremque non cum id reprehenderit, quisquam totam aspernatur tempora minima unde aliquid ea culpa sunt. Reiciendis quia dolorum ducimus unde.</p>
             </div>
             <div class="col-md-6">
-                <img class="img-responsive" src="http://placehold.it/700x450" alt="">
+                <img class="img-responsive" src="assets/img/footer_logo.png" alt="">
             </div>
         </div>
         <!-- /.row -->
@@ -32,7 +32,7 @@
             <div class="col-md-4" *ngFor="let tournament of _newTournaments">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4> {{tournament.name}}</h4>
+                        <h4><a (click)="navToTournament(selectedTournamentID)">{{tournament.name}}</a></h4>
                     </div>
                     <div class="panel-body">
                         <p><strong>Details:</strong></p>

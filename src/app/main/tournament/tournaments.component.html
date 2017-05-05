@@ -17,7 +17,7 @@
                   </tr>
               </thead>
               <tbody>
-                <tr *ngFor='let tournament of tournaments' class='tourn-row' (click)='navToTournament(tournament._id)'>
+                <tr *ngFor='let tournament of _tournaments' class='tourn-row' (click)='navToTournament(tournament._id)'>
                   <td>{{ tournament.name }}</td>
                   <td>{{ tournament.type }}</td>
                   <td>{{ tournament.registrationType }}</td>

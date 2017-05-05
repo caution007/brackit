@@ -11,20 +11,20 @@ import { TournamentService } from './services/tournament.service';
 })
 export class TournamentsComponent implements OnInit {
 
-  private tournaments: Array<any> = [];
+  private _tournaments: Array<any> = [];
 
-  constructor(private tournamentService: TournamentService,
-                private router: Router) {
+  constructor(private _tournamentService: TournamentService,
+                private _router: Router) {
   }
 
   ngOnInit() {
-    this.tournamentService.getAllTournaments().subscribe(tournament => {
-      this.tournaments = tournament;
+    this._tournamentService.getAllTournaments().subscribe(tournament => {
+      this._tournaments = tournament;
     });
   }
 
   navToTournament(selectedTournamentID) {
-    this.router.navigate(['/tournament', selectedTournamentID]);
+    this._router.navigate(['/tournament', selectedTournamentID]);
   }
 
 }
