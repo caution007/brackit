@@ -18,7 +18,7 @@
                 </li>
                 <li class=""><a href="#results-tab" data-toggle="tab"><i class="fa fa-tree"></i> Results</a>
                 </li>
-                <li class="" *ngIf="_auth.authenticated() && !_inTeam"><a href="#join-tab" data-toggle="tab"><i class="fa fa-tree"></i> Join</a>
+                <li class="" *ngIf="_auth.authenticated()"><a href="#join-tab" data-toggle="tab"><i class="fa fa-tree"></i> <span *ngIf="!_inTeam">Join</span><span *ngIf="_inTeam">Leave</span></a>
                 </li>
               </ul>
               
@@ -105,17 +105,26 @@
                         <span></span> 
                     </div>
                 </div>
-                <div class="tab-pane fade" id="join-tab" *ngIf="_auth.authenticated() && !_inTeam">
-                    <div>
-                        <h4>Join</h4>
-                        <div class="form-group">
+                <div class="tab-pane fade" id="join-tab" *ngIf="_auth.authenticated()">
+                    <div *ngIf="!_teamOwner">
+                        <h4 *ngIf="!_inTeam">Join</h4><h4 *ngIf="_inTeam">Leave</h4>
+                        <div class="form-group" *ngIf="!_inTeam">
                           <div class="col-md-3">
                               <input name="pwInput" type="text" class="form-control input-md" [(ngModel)]="_joinPassword" >
                           </div>
                           <div class="col-md-3">
-                              <button id="joinButton" name="joinButton" class="btn btn-success" (click)="joinTournamentPlayer()">Join</button>
+                              <button id="joinButton" name="joinButton" class="btn btn-success" (click)="joinTeamPlayer()">Join</button>
                           </div>
                         </div>
+
+                        <div class="form-group" *ngIf="_inTeam">
+                            <div class="col-md-3">
+                              <button id="leaveButton" name="leaveButton" class="btn btn-danger" (click)="leaveTeam()">Leave</button>
+                          </div>
+                        </div>
+                    </div>
+                    <div *ngIf="_teamOwner">
+                        You are the team owner, you can not leave.
                     </div>
                 </div>
               </div>

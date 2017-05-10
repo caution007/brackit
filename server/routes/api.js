@@ -375,6 +375,66 @@ function createLeagueTeamObject(id, name) {
   return team;
 }
 
+router.get('/tournaments/joined/:userId', (req, res) => {
+  let tournaments = {team: []};
+  Profile.findByIdAsync(req.params.userId)
+    .then((profile) => {
+      tournaments.player = profile.tournaments;
+      let count = 0;
+      for (let i = 0; i < profile.teams.length; i++) {
+        (function(index) {
+          Team.findByIdAsync(profile.teams[index])
+            .then((team) => {
+              tournaments.team.push.apply(tournaments.team, team.tournaments);
+              count++;
+              if (count > (profile.teams.length - 1)) {
+                getAllTeamJoinedTournaments(tournaments, res);
+              }
+            })
+            .error(console.error);
+        }(i))
+      }
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
+function getAllTeamJoinedTournaments(tournaments, res) {
+  let count = 0;
+  for (let i = 0; i < tournaments.team.length; i++) {
+      (function(index) {
+          Tournament.findByIdAsync(tournaments.team[index])
+            .then((tournament) => {
+              tournaments.team[index] = tournament;
+              count++;
+              if (count > (tournaments.team.length - 1)) {
+                getAllPlayerJoinedTournaments(tournaments, res);
+              }
+            })
+            .error(console.error);
+      }(i))
+  }
+}
+
+function getAllPlayerJoinedTournaments(tournaments, res) {
+  let count = 0;
+  for (let i = 0; i < tournaments.player.length; i++) {
+      (function(index) {
+          Tournament.findByIdAsync(tournaments.player[index])
+            .then((tournament) => {
+              tournaments.player[index] = tournament;
+              count++;
+              if (count > (tournaments.player.length - 1)) {
+                res.json({ 'status': 'success', 'tournaments': tournaments });
+              }
+            })
+            .error(console.error);
+      }(i))
+  }
+}
+
 // GET all tournaments owned by specific user, by user id //
 router.get('/tournaments/userid/:userId', (req, res, next) => {
   Tournament.findAsync({ 'owner': req.params.userId })
@@ -567,7 +627,8 @@ function bo1Model(teamOne, teamTwo, id, rType) {
 
   return bo1;
 };
-//scoreOne, scoreTwo, matchId, tournId, incDraws, regType, matchType, participentCheck, points
+
+// POST match result //
 router.post('/matchresult', (req, res) => {
   
     switch(req.body.matchType) {
@@ -892,8 +953,10 @@ router.post('/team', (req, res) => {
     matches: []
   })
 
+
   team.saveAsync()
     .then((team) => {
+      addTeamToProfile(req.body.team.owner, team._id);
       res.json({ 'status': 'success', 'tournament': team });
     })
     .catch((e) => {
@@ -901,6 +964,17 @@ router.post('/team', (req, res) => {
     })
     .error(console.error);
 })
+
+function addTeamToProfile(profileId, teamId) {
+  Profile.findByIdAndUpdate(
+    profileId,
+    { $push: {teams: teamId} })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+  
+}
 
 // POST a new member to a team //
 router.post('/team/join', (req, res) => {
@@ -914,6 +988,7 @@ router.post('/team/join', (req, res) => {
       if (req.body.joinPassword == team.joinPassword) {
         Team.findOneAndUpdateAsync({ _id: req.body.teamId }, { $push: {members: member}})
         .then((member) => {
+          addTeamToProfile(req.body.id, team._id);
           res.json({ 'password': true });
         })
         .catch((e) => {
@@ -933,6 +1008,30 @@ router.post('/team/join', (req, res) => {
 function createTeamMemberObject(id, username) { 
   return {id: id, username: username, role: 'member'};
 }
+
+router.post('/team/leave', (req, res) => {
+  console.log(req.body.teamId);
+  console.log(req.body.memberId);
+  Team.findByIdAndUpdateAsync(
+    req.body.teamId,
+    { $pull: { 'members': { id: req.body.memberId } } })
+    .then(() => {
+      Profile.findByIdAndUpdateAsync(
+        req.body.memberId,
+        { $pull: { 'teams': mongoose.Types.ObjectId(req.body.teamId) } })
+        .then(() => {
+          res.json({ 'status': 'success'});
+        })
+        .catch((e) => {
+          res.json({ 'status': 'error', 'error': e });
+        })
+        .error(console.error);
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
 
 router.get('/ownedteams/:id', (req, res) => {
   Team.findAsync({'members.id': req.params.id, 'members.role': 'owner'})
@@ -977,7 +1076,8 @@ function createProfile(id, username) {
     familyName: '',
     tournaments: [],
     joined: date,
-    matches: []
+    matches: [],
+    teams: []
   })
 
   profile.saveAsync()
@@ -1000,16 +1100,54 @@ router.put('/profile/update/:_id', (req, res, next) => {
 })
 
 // GET one public profile //
-router.get('/profile/public/:id', (req, res, next) => {
+router.get('/profile/public/:id', (req, res) => {
   Profile.findByIdAsync(req.params.id)
     .then((profile) => {
       profile = profile.toObject();
       delete profile.userId;
-      res.status(200).json(profile);
+      getProfileTeams(profile, res);
     })
-    .catch(next)
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
     .error(console.error);
 });
+
+function getProfileTeams(profile, res) {
+  let count = 0;
+  for (let i = 0; i < profile.teams.length; i++) {
+      (function(index) {
+          Team.findByIdAsync(profile.teams[index])
+            .then((team) => {
+              team = team.toObject();
+              delete team.joinPassword;
+              profile.teams[index] = team;
+              count++;
+              if (count > (profile.teams.length - 1)) {
+                getProfileTournaments(profile, res);
+              }
+            })
+            .error(console.error);
+      }(i))
+  }
+}
+
+function getProfileTournaments(profile, res) {
+  let count = 0;
+  for (let i = 0; i < profile.tournaments.length; i++) {
+      (function(index) {
+          Tournament.findByIdAsync(profile.tournaments[index])
+            .then((tournament) => {
+              profile.tournaments[index] = tournament;
+              count++;
+              if (count > (profile.tournaments.length - 1)) {
+                res.json({ 'status': 'success', 'profile': profile });
+              }
+            })
+            .error(console.error);
+      }(i))
+  }
+}
 
 // MATCH //
 router.get('/match/:id', (req, res, next) => {

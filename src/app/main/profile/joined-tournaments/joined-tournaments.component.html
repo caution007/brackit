@@ -1,7 +1,50 @@
-<div id="wrap">
-    <div class="container">
-        <div class="row">
-          
-        </div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Joined Tournaments</h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-lg-12" *ngIf="_tournaments && (_tournaments.player.length == 0) && (_tournaments.team.length == 0)">
+        <p >You are not in any tournaments.</p>
+      </div>
+      <div class="col-lg-12" *ngIf="_tournaments && (_tournaments.player.length > 0)">
+        <h4>Player</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Game</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let tournament of _tournaments.player">
+                <tr (click)='navToTournament(tournament._id)'>
+                    <td>{{tournament.name}}</td>
+                    <td>{{tournament.type}}</td>
+                    <td>{{tournament.game}}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+      <div class="col-lg-12" *ngIf="_tournaments && (_tournaments.team.length > 0)">
+        <h4>Team</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Game</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let tournament of _tournaments.team">
+                <tr (click)='navToTournament(tournament._id)'>
+                    <td>{{tournament.name}}</td>
+                    <td>{{tournament.type}}</td>
+                    <td>{{tournament.game}}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>

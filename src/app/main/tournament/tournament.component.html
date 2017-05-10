@@ -71,7 +71,7 @@
                                     </span>
                                 </div>
                                 <div class="panel-body" *ngIf="_teams">
-                                    <h4><a (click)='navToTeam(team.id)'>{{_teams[_tournament.getTeams().indexOf(team)].name}}</a></h4>
+                                    <h4><a (click)='navToTeam(_teams[_tournament.getTeams().indexOf(team)]._id)'>{{_teams[_tournament.getTeams().indexOf(team)].name}}</a></h4>
                                     <div class="dropdown">
                                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Players <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
@@ -175,7 +175,7 @@
                     </div>
                     <div class="tab-pane fade" id="signup-tab" *ngIf="_auth.authenticated()">
                         <div>
-                            <h4>Signup</h4>
+                            <h4 *ngIf="!_inTournament">Signup</h4><h4 *ngIf="_inTournament">Leave</h4>
                             <div *ngIf="_tournament.getCompetitorType() == 0">
                                 <a class="btn btn-success" *ngIf="!_inTournament" (click)="joinTournamentPlayer()">Join</a>
                                 <a class="btn btn-danger" *ngIf="_inTournament" (click)="leaveTournament(_profile._id)">Leave</a>

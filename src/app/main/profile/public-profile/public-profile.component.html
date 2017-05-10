@@ -4,7 +4,7 @@
       <div class="row">
             <div class="col-md-12" *ngIf="_profile">
                 <h1 class="page-header">{{_profile.firstName}} "{{_profile.username}}" {{_profile.familyName}}
-                    <small>Member Since: </small>
+                    <small *ngIf="_memberSince">Member Since: {{_memberSince}}</small>
                 </h1>
             </div>
         </div>
@@ -36,13 +36,39 @@
               <div class="tab-pane fade active in" id="teams-tab">
                   <div>
                       <h4>Teams</h4>
-                      <span>HHHHH</span> 
+                      <table class="table table-hover" *ngIf="_profile">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let team of _profile.teams">
+                                <tr (click)='navToTeam(team._id)'>
+                                    <td>{{team.name}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                   </div>
               </div>
               <div class="tab-pane fade" id="tournaments-tab">
                   <div>
                       <h4>Tournaments</h4>
-                      <span>HHHHH</span> 
+                      <table class="table table-hover" *ngIf="_profile">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Game</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let tournament of _profile.tournaments">
+                                <tr (click)='navToTournament(tournament._id)'>
+                                    <td>{{tournament.name}}</td>
+                                    <td>{{tournament.type}}</td>
+                                    <td>{{tournament.game}}</td>
+                                </tr>
+                            </tbody>
+                        </table> 
                   </div>
               </div>
           </div>

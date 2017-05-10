@@ -74,7 +74,7 @@ export class TournamentComponent implements OnInit {
       console.log(this._tournament);
 
       if (this._tournament.getTeams().length != 0) {
-        this._standings = this._tournament.getStandings()
+        this._standings = this._tournament.getStandings();
         console.log(this._tournament.getTeams());
       }
 

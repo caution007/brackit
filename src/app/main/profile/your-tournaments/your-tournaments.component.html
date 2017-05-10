@@ -47,7 +47,7 @@
                     <td>{{tournament.type}}</td>
                     <td>{{tournament.teamLimit.current}}/{{tournament.teamLimit.max}}</td>
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="_panelService.selectedPanel(9, tournament._id)"><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button type="button" title="Edit Tournament" class="btn btn-primary btn-sm" (click)="_panelService.selectedPanel(9, tournament._id)"><i class="glyphicon glyphicon-pencil"></i></button>
                         <button type="button" title="Start Tournament" class="btn btn-success btn-sm" (click)="startTournament(
                             tournament._id,
                             tournament.type,

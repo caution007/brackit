@@ -45,6 +45,11 @@ export class TournamentService {
       .map(res => res.json());
   }
 
+  getJoinedTournaments(id) {
+    return this._http.get(this._url + '/tournaments/joined/' + id)
+      .map(res => res.json());
+  }
+
   getTeamsAndPlayers(id) {
     return this._http.get(this._url + '/tournament/teams/' + id)
       .map(res => res.json());

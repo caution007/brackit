@@ -39,8 +39,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe(panel => {
         this.panelChecker(panel);
       });
-
-    this._panel = ProfileMainComponent;
   }
 
   panelChecker(check) {
@@ -80,5 +78,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._subscr.unsubscribe();
+    //this._panelService.selectedPanel(0, null);
   }
 }

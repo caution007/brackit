@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Auth } from '../../auth/auth.service';
 import { ProfileService } from '../profile/services/profile.service';
 import { SearchService } from '../search/services/search.service';
+import { PanelService } from '../profile/services/panel.service';
 
 @Component({
   selector: 'app-navigation',
@@ -22,7 +23,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   constructor(private _auth: Auth, 
                 private _profileService: ProfileService,
                   private _router: Router,
-                    private _searchService: SearchService) {}
+                    private _searchService: SearchService,
+                      private _panelService: PanelService) {}
 
   ngOnInit() {
     this._user = JSON.parse(localStorage.getItem('profile'));

@@ -7,7 +7,8 @@ var profileSchema = new mongoose.Schema ({
   familyName: String,
   tournaments: Array,
   joined: Date,
-  matches: Array
+  matches: Array,
+  teams: Array
 }, {
   versionKey: false
 });

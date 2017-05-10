@@ -30,4 +30,13 @@ export class ProfileService {
       .map(res => res.json());
   }
 
+  getProfileTeams(id) {
+    return this._http.get(this._url + '/profile/teams/' + id)
+      .map(res => res.json());
+  }
+
+  getProfileTournaments(id) {
+    return this._http.get(this._url + '/profile/tournaments/' + id)
+      .map(res => res.json());
+  }
 }

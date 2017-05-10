@@ -23,7 +23,7 @@
                         <a class="dropdown-toggle" data-toggle="dropdown">{{_user.username}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                              <li>
-                                <a routerLink="/profile" routerLinkActive="active" >Profile</a>
+                                <a routerLink="/profile" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Profile</a>
                             </li>
                             <li>
                                 <a routerLink="/usertournaments" routerLinkActive="active">Tournaments</a>

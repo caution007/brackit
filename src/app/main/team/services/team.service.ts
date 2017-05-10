@@ -33,4 +33,9 @@ export class TeamService {
     return this._http.get(this._url + '/ownedteams/' + id)
       .map(res => res.json());
   }
+
+  public leaveTeam(teamId, memberId) {
+    return this._http.post(this._url + '/team/leave', {teamId, memberId})
+      .map(res => res.json());
+  }
 }

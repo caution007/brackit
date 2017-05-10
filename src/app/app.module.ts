@@ -19,7 +19,7 @@ import { FooterComponent } from './main/footer/footer.component';
 import { TournamentComponent } from './main/tournament/tournament.component';
 import { NotfoundComponent } from './main/notfound/notfound.component';
 import { ProfileComponent } from './main/profile/profile.component';
-import { DclWrapper } from './main/utilities/dclwrapper.component';
+import { PanelWrapper } from './main/utilities/panelwrapper.component';
 import { EditProfileComponent } from './main/profile/edit-profile/edit-profile.component';
 import { GameAccountsComponent } from './main/profile/game-accounts/game-accounts.component';
 import { ProfileMainComponent } from './main/profile/profile-main/profile-main.component';
@@ -55,7 +55,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
 @NgModule({
   declarations: [
     AppComponent,
-    DclWrapper,
+    PanelWrapper,
     TournamentsComponent,
     NavigationComponent,
     FrontPageComponent,

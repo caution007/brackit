@@ -1,18 +1,16 @@
-// Adapted from: http://plnkr.co/edit/UGzoPTCHlXKWrn4p8gd1?p=preview //
-//our root app component
 import { NgModule, Component, Compiler, ViewContainerRef, ViewChild,
    Input, ComponentRef, ComponentFactory, ComponentFactoryResolver, ChangeDetectorRef } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { FormsModule } from '@angular/forms'
 
-// Helper component to add dynamic components
+
 @Component({
-  selector: 'dcl-wrapper',
-  template: `<div #target></div>`
+  selector: 'panel-wrapper',
+  template: `<div #view></div>`
 })
-export class DclWrapper {
-  @ViewChild('target', {read: ViewContainerRef}) target: ViewContainerRef;
-  @Input() type;
+export class PanelWrapper {
+  @ViewChild('view', {read: ViewContainerRef}) target: ViewContainerRef;
+  @Input() panel;
   private _cmpRef: ComponentRef<Component>;
   private _isViewInitialized: Boolean = false;
 
@@ -20,21 +18,16 @@ export class DclWrapper {
                 private _compiler: Compiler) {}
 
   updateComponent() {
-    if(!this._isViewInitialized) {
+    if (!this._isViewInitialized) {
       return;
     }
     
-    if(this._cmpRef) {
-      // when the `type` input changes we destroy a previously 
-      // created component before creating the new one
+    if (this._cmpRef) {
       this._cmpRef.destroy();
     }
 
-    let factory = this._componentFactoryResolver.resolveComponentFactory(this.type);
+    let factory = this._componentFactoryResolver.resolveComponentFactory(this.panel);
     this._cmpRef = this.target.createComponent(factory)
-    // to access the created instance use
-    // this.compRef.instance.someProperty = 'someValue';
-    // this.compRef.instance.someOutput.subscribe(val => doSomething());
   }
 
   ngOnChanges() {
@@ -47,7 +40,7 @@ export class DclWrapper {
   }
 
   ngOnDestroy() {
-    if(this._cmpRef) {
+    if (this._cmpRef) {
       this._cmpRef.destroy();
     }    
   }

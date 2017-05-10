@@ -18,8 +18,11 @@ export class TeamComponent implements OnInit {
   private _profile;
   private _team: Team;
   private _inTeam = false;
+  private _teamOwner = false;
 
   private _joinPassword;
+
+  private _leaveTeamSub;
 
   constructor(private _router: Router,
                 private _activatedRoute: ActivatedRoute,
@@ -47,19 +50,32 @@ export class TeamComponent implements OnInit {
       console.log(team);
       if(this._auth.authenticated) {
         for (let i = 0; i < this._team.getMembers().length; i++) {
-         if(this._team.getMembers()[i].username == this._user.username) {
-          this._inTeam = true;
-         }
+          if(this._team.getMembers()[i].username == this._user.username) {
+            this._inTeam = true;
+            if (this._team.getMembers()[i].role == 'owner') {
+              this._teamOwner = true;
+            }
+          }
         }
       }
     })
   }
 
-  joinTournamentPlayer() {
+  joinTeamPlayer() {
     this._teamService.joinTeam(this._team.getId(), this._profile._id, this._profile.username, this._joinPassword)
       .subscribe(result => {
         console.log(result);
+        location.reload();
       })
+  }
+
+  leaveTeam() {
+    this._leaveTeamSub = this._teamService.leaveTeam(this._team.getId(), this._profile._id).subscribe(result => {
+      if(result.status == 'success') {
+        this._leaveTeamSub.unsubscribe();
+      }
+      location.reload();
+    })
   }
 
   navToPlayer(selectedPlayerID) {
