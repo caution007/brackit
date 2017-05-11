@@ -33,6 +33,7 @@ import { PublicProfileComponent } from './main/profile/public-profile/public-pro
 import { MatchComponent } from './main/match/match.component';
 import { EditTournamentComponent } from './main/profile/edit-tournament/edit-tournament.component';
 import { SearchComponent } from './main/search/search.component';
+import { MatchChatComponent } from './main/match/chat/match-chat.component';
 
 // SERVICES //
 import { TournamentService } from './main/tournament/services/tournament.service';
@@ -41,6 +42,7 @@ import { PanelService } from './main/profile/services/panel.service';
 import { TeamService } from './main/team/services/team.service';
 import { MatchService } from './main/match/services/match.service';
 import { SearchService } from './main/search/services/search.service';
+import { MatchChatService } from './main/match/chat/match-chat.service';
 import { Auth } from './auth/auth.service';
 
 
@@ -76,7 +78,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     MatchComponent,
     EditTournamentComponent,
     Typeahead,
-    SearchComponent
+    SearchComponent,
+    MatchChatComponent
   ],
   imports: [
     BrowserModule,
@@ -92,6 +95,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     PanelService,
     MatchService,
     SearchService,
+    MatchChatService,
     Auth,
     AuthGuard,
     {

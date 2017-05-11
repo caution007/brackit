@@ -4,7 +4,8 @@ var matchSchema = new mongoose.Schema ({
   tournamentId: String,
   type: String,
   start: Date,
-  complete: Boolean
+  complete: Boolean,
+  messages: Array
 }, {
   versionKey: false
 });

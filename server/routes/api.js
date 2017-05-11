@@ -362,7 +362,7 @@ function registrationTypeCheck(teams) {
   let array = [];
 
   for (let i = 0; i < splitTeams.length; i++) {
-    let team = createLeagueTeamObject('', splitTeams[i]);
+    let team = createLeagueTeamObject(mongoose.Types.ObjectId().toString(), splitTeams[i]);
     array.push(team);
   }
 
@@ -600,7 +600,8 @@ function matchModel(id, type, start) {
     tournamentId: id,
     type: type,
     start: start,
-    complete: false
+    complete: false,
+    messages: []
   })
 
   return m;
@@ -630,7 +631,7 @@ function bo1Model(teamOne, teamTwo, id, rType) {
 
 // POST match result //
 router.post('/matchresult', (req, res) => {
-  
+    console.log(req.body);
     switch(req.body.matchType) {
       case 'bo1':
         getMatchType(
@@ -653,7 +654,8 @@ function getMatchType(
   matchId, matchType, participentCheck, scoreOne, scoreTwo, incDraws, participents, tournId, points, regType, res) {
   switch(matchType) {
     case 'bo1':
-      Bo1.findByIdAsync( matchId )
+      if (regType == 'Signup') {
+        Bo1.findByIdAsync( matchId )
         .then((bo1) => {
           console.log('bo1');
           checkIfOpponentSubmittedResult(
@@ -675,6 +677,12 @@ function getMatchType(
         })
         .error(console.error);
       break;
+    } else if (regType == 'List') {
+      console.log('hype');
+      submitOfficialResult(
+            matchId, scoreOne, scoreTwo, participentCheck, participents, tournId, points, res);
+    }
+      
   }
 }
 
@@ -707,6 +715,7 @@ function checkIfOpponentSubmittedResult(
 
 function officialResultCheck(
   incDraws, scoreOne, scoreTwo, matchId, participentCheck, participents, tournId, points, res) {
+    console.log('official');
   Bo1.findByIdAsync(matchId)
     .then((bo1) => {
       if (participentCheck == 0) {
@@ -1215,6 +1224,30 @@ router.get('/match/:id', (req, res, next) => {
     .error(console.error);
 })
 
+router.post('/matchmessage', (req, res) => {
+  console.log(req.body);
+  Match.findByIdAndUpdateAsync(
+    req.body.matchId,
+    { $push: {messages: req.body.msg} })
+    .then(() => {
+      res.json({ 'status': 'success' });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
+
+router.get('/matchmessages/:id', (req, res) => {
+  Match.findByIdAsync(req.params.id)
+    .then((match) => {
+      res.json({ 'status': 'success', 'messages': match.messages });
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+})
 
 // SEARCH //
 
@@ -1222,7 +1255,6 @@ router.get('/match/:id', (req, res, next) => {
 router.get('/search/tournaments/:search', (req, res) => {
   Tournament.findAsync({ 'name': {'$regex': req.params.search, '$options': 'i'} })
     .then((tournaments) => {
-      console.log(tournaments);
       res.json({ 'status': 'success', 'tournaments': tournaments });
     })
     .catch((e) => {
@@ -1240,7 +1272,6 @@ router.get('/search/teams/:search', (req, res) => {
         delete team.joinPassword;
         teams[i] = team;
       }
-      console.log(teams);
       res.json({ 'status': 'success', 'teams': teams });
     })
     .catch((e) => {
@@ -1258,7 +1289,6 @@ router.get('/search/members/:search', (req, res) => {
         delete member.userId;
         members[i] = member;
       }
-      console.log(members);
       res.json({ 'status': 'success', 'members': members });
     })
     .catch((e) => {

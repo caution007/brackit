@@ -90,12 +90,12 @@
                     </thead>
                     <tbody *ngFor="let fixture of _matches.fixtures">
                         <tr>
-                            <td>{{fixture.partakers[0].name}}<input name="scoreoneinput" id="scoreOne" type="text" class="form-control input-md"></td>
+                            <td>{{fixture.partakers[0].name}}<input name="scoreoneinput" id="scoreOne" type="text" class="form-control input-md" [(ngModel)]="fixture.partakers[0].score"></td>
                             <td>vs</td>
-                            <td>{{fixture.partakers[1].name}}<input name="scoreoneinput" id="scoreTwo" type="text" class="form-control input-md"></td>
+                            <td>{{fixture.partakers[1].name}}<input name="scoreoneinput" id="scoreTwo" type="text" class="form-control input-md" [(ngModel)]="fixture.partakers[1].score"></td>
                             <td>
                                 <button type="button" title="Edit Tournament" class="btn btn-success btn-sm" 
-                                    (click)="submitResult(scoreOne, scoreTwo, fixture.matchTypeId, fixture.partakers[0].name, fixture.partakers[0].id, fixture.partakers[1].name, fixture.partakers[1].id)"><i class="fa fa-check"></i></button>
+                                    (click)="submitResult(fixture.partakers[0].score, fixture.partakers[1].score, fixture.matchTypeId, fixture.partakers[0].name, fixture.partakers[0].id, fixture.partakers[1].name, fixture.partakers[1].id)"><i class="fa fa-check"></i></button>
                             </td>
                         </tr>
                     </tbody>

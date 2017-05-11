@@ -5,6 +5,7 @@ import { Auth } from '../../auth/auth.service';
 import { MatchService } from './services/match.service';
 import { ProfileService } from '../profile/services/profile.service';
 import { TournamentService } from '../tournament/services/tournament.service';
+import { MatchChatService } from './chat/match-chat.service';
 
 @Component({
   selector: 'app-match',
@@ -22,6 +23,7 @@ export class MatchComponent implements OnInit {
   private _participentCheck;
   private _scoreOne;
   private _scoreTwo;
+  private _matchChatCheck = false;
 
   // Subscriptions //
   private _submitResultSub;
@@ -31,7 +33,8 @@ export class MatchComponent implements OnInit {
                   private _auth: Auth,
                    private _activatedRoute: ActivatedRoute,
                     private _router: Router,
-                      private _tournamentService: TournamentService) { 
+                      private _tournamentService: TournamentService,
+                        private _matchChatService: MatchChatService) { 
     this._user = JSON.parse(localStorage.getItem('profile'));
   }
 
@@ -55,6 +58,7 @@ export class MatchComponent implements OnInit {
         this.inTournamentCheck();
       }
     })
+
   }
 
   private inTournamentCheck() {
@@ -64,6 +68,8 @@ export class MatchComponent implements OnInit {
           if(this._match.teams[i].members[l].id == this._profile._id) {
             this._inMatch = true;
             this._participentCheck = i;
+            this.setUserDetails();
+            this._matchChatCheck = true;
             console.log(this._participentCheck);
             console.log(this._inMatch);
             if(this._match.teams[i].members[l].role == 'owner') {
@@ -79,6 +85,8 @@ export class MatchComponent implements OnInit {
           this._inMatch = true;
           this._owner = true;
           this._participentCheck = i;
+          this.setUserDetails();
+          this._matchChatCheck = true;
           console.log(this._participentCheck);
         }
       }
@@ -110,6 +118,16 @@ export class MatchComponent implements OnInit {
           location.reload();
         }
       })
+  }
+
+  setUserDetails() {
+    let obj = {
+      participent: this._participentCheck,
+      profile: this._profile,
+      match: this._match.match._id
+    }
+
+    this._matchChatService.setUserDetails(obj);
   }
 
   navToTeam(selectedTeamID) {

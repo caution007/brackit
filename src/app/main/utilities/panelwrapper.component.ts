@@ -11,7 +11,8 @@ import { FormsModule } from '@angular/forms'
 export class PanelWrapper {
   @ViewChild('view', {read: ViewContainerRef}) target: ViewContainerRef;
   @Input() panel;
-  private _cmpRef: ComponentRef<Component>;
+  
+  private _compRef: ComponentRef<Component>;
   private _isViewInitialized: Boolean = false;
 
   constructor(private _componentFactoryResolver: ComponentFactoryResolver, 
@@ -22,12 +23,12 @@ export class PanelWrapper {
       return;
     }
     
-    if (this._cmpRef) {
-      this._cmpRef.destroy();
+    if (this._compRef) {
+      this._compRef.destroy();
     }
 
     let factory = this._componentFactoryResolver.resolveComponentFactory(this.panel);
-    this._cmpRef = this.target.createComponent(factory)
+    this._compRef = this.target.createComponent(factory)
   }
 
   ngOnChanges() {
@@ -40,8 +41,8 @@ export class PanelWrapper {
   }
 
   ngOnDestroy() {
-    if (this._cmpRef) {
-      this._cmpRef.destroy();
+    if (this._compRef) {
+      this._compRef.destroy();
     }    
   }
 }
