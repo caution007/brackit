@@ -19,8 +19,8 @@
                 <td>{{this._profile.familyName}}</td>
               </tr>
               <tr>
-                <td>Country:</td>
-                <td><img src="img/flags/_wales.png"> Wales</td>
+                <td>Age:</td>
+                <td>{{this._profile.age}}</td>
               </tr>
             </tbody>
           </table>
@@ -28,20 +28,24 @@
         <div class="col-sm-4 col-md-4">
           <table>
             <thead>
-              <th>Personal</th>
+              <th>Gaming Information</th>
             </thead>
             <tbody>
               <tr>
-                <td>First Name:</td>
-                <td>{{this._profile.firstName}}</td>
+                <td>Windows Sensitivity:</td>
+                <td>{{this._profile.gamingInfo.windowsSense}}</td>
               </tr>
               <tr>
-                <td>Family Name:</td>
-                <td>{{this._profile.familyName}}</td>
+                <td>In-game Sensitivity:</td>
+                <td>{{this._profile.gamingInfo.inGameSense}}</td>
               </tr>
               <tr>
-                <td>Country:</td>
-                <td><img src="img/flags/_wales.png"> Wales</td>
+                <td>In-game Resolution:</td>
+                <td>{{this._profile.gamingInfo.inGameRes}}</td>
+              </tr>
+              <tr>
+                <td>Refresh Rate:</td>
+                <td>{{this._profile.gamingInfo.refreshRate}}</td>
               </tr>
             </tbody>
           </table>
@@ -49,20 +53,48 @@
         <div class="col-sm-4 col-md-4">
           <table>
             <thead>
-              <th>Personal</th>
+              <th>Computer Specifications</th>
             </thead>
             <tbody>
               <tr>
-                <td>First Name:</td>
-                <td>{{this._profile.firstName}}</td>
+                <td>OS:</td>
+                <td>{{this._profile.compSpecs.os}}</td>
               </tr>
               <tr>
-                <td>Family Name:</td>
-                <td>{{this._profile.familyName}}</td>
+                <td>CPU</td>
+                <td>{{this._profile.compSpecs.cpu}}</td>
               </tr>
               <tr>
-                <td>Country:</td>
-                <td><img src="img/flags/_wales.png"> Wales</td>
+                <td>Memory:</td>
+                <td>{{this._profile.compSpecs.memory}}</td>
+              </tr>
+              <tr>
+                <td>Hard Drive:</td>
+                <td>{{this._profile.compSpecs.hardDrive}}</td>
+              </tr>
+              <tr>
+                <td>Video Card:</td>
+                <td>{{this._profile.compSpecs.videoCard}}</td>
+              </tr>
+              <tr>
+                <td>Headphones:</td>
+                <td>{{this._profile.compSpecs.headPhones}}</td>
+              </tr>
+              <tr>
+                <td>Monitor:</td>
+                <td>{{this._profile.compSpecs.monitor}}</td>
+              </tr>
+              <tr>
+                <td>Mouse:</td>
+                <td>{{this._profile.compSpecs.mouse}}</td>
+              </tr>
+              <tr>
+                <td>Mousepad:</td>
+                <td>{{this._profile.compSpecs.mousepad}}</td>
+              </tr>
+              <tr>
+                <td>Keyboard:</td>
+                <td>{{this._profile.compSpecs.keyboard}}</td>
               </tr>
             </tbody>
           </table>

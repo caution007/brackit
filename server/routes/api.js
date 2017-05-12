@@ -1083,10 +1083,31 @@ function createProfile(id, username) {
     username: username,
     firstName: '',
     familyName: '',
+    age: null,
     tournaments: [],
     joined: date,
     matches: [],
-    teams: []
+    teams: [],
+    compSpecs: {
+      os: '',
+      cpu: '',
+      memory: '',
+      hardDrive: '',
+      videoCard: '',
+      headPhones: '',
+      monitor: '',
+      mouse: '',
+      mousepad: '',
+      keyboard: ''
+    },
+    steam: '',
+    gamingInfo: {
+      windowsSense: '',
+      inGameSense: '',
+      inGameRes: '',
+      refreshRate: ''
+    },
+    biography: ''
   })
 
   profile.saveAsync()

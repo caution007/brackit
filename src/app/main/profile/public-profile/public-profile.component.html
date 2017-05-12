@@ -12,17 +12,33 @@
             <div class="col-md-2">
                 <img class="img-responsive" src="http://placehold.it/130x170" alt="">
             </div>
-            <div class="col-md-5">
-                <h2>Lorem ipsum </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed voluptate nihil eum consectetur similique? Consectetur, quod, incidunt, harum nisi dolores delectus reprehenderit voluptatem perferendis dicta dolorem non blanditiis ex fugiat.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, magni, aperiam vitae illum voluptatum aut sequi impedit non velit ab ea pariatur sint quidem corporis eveniet. Odit, temporibus reprehenderit dolorum!</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, consequuntur, modi mollitia corporis ipsa voluptate corrupti eum ratione ex ea praesentium quibusdam? Aut, in eum facere corrupti necessitatibus perspiciatis quis?</p>
+            <div class="col-md-5" *ngIf="_profile">
+                <h2>Gaming Information</h2>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Windows Sensitivity:</strong> {{_profile.gamingInfo.windowsSense}}</li>
+                    <li class="list-group-item"><strong>In-game Sensitivity:</strong> {{_profile.gamingInfo.inGameSense}}</li>
+                    <li class="list-group-item"><strong>In-game Resolution:</strong> {{_profile.gamingInfo.inGameRes}}</li>
+                    <li class="list-group-item"><strong>Refresh Rate:</strong> {{_profile.gamingInfo.refreshRate}}</li>
+                </ul>
+                <h2>Contact</h2>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Steam:</strong> <a [href]=_steamLink>{{_profile.steam}}</a></li>
+                </ul>
             </div>
-            <div class="col-md-5">
-                <h2>Lorem ipsum </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed voluptate nihil eum consectetur similique? Consectetur, quod, incidunt, harum nisi dolores delectus reprehenderit voluptatem perferendis dicta dolorem non blanditiis ex fugiat.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, magni, aperiam vitae illum voluptatum aut sequi impedit non velit ab ea pariatur sint quidem corporis eveniet. Odit, temporibus reprehenderit dolorum!</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, consequuntur, modi mollitia corporis ipsa voluptate corrupti eum ratione ex ea praesentium quibusdam? Aut, in eum facere corrupti necessitatibus perspiciatis quis?</p>
+            <div class="col-md-5" *ngIf="_profile">
+                <h2>Computer Specifications</h2>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>OS:</strong> {{_profile.compSpecs.os}}</li>
+                    <li class="list-group-item"><strong>CPU:</strong> {{_profile.compSpecs.cpu}}</li>
+                    <li class="list-group-item"><strong>Memory:</strong> {{_profile.compSpecs.memory}}</li>
+                    <li class="list-group-item"><strong>Hard Drive:</strong> {{_profile.compSpecs.hardDrive}}</li>
+                    <li class="list-group-item"><strong>Video Card:</strong> {{_profile.compSpecs.videoCard}}</li>
+                    <li class="list-group-item"><strong>Headphones:</strong> {{_profile.compSpecs.headPhones}}</li>
+                    <li class="list-group-item"><strong>Monitor:</strong> {{_profile.compSpecs.monitor}}</li>
+                    <li class="list-group-item"><strong>Mouse:</strong> {{_profile.compSpecs.mouse}}</li>
+                    <li class="list-group-item"><strong>Mousepad:</strong> {{_profile.compSpecs.mousepad}}</li>
+                    <li class="list-group-item"><strong>Keyboard:</strong> {{_profile.compSpecs.keyboard}}</li>
+                </ul>
             </div>
         </div>
         <div class="col-md-12">

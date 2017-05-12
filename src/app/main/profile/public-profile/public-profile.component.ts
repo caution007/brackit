@@ -14,6 +14,8 @@ export class PublicProfileComponent implements OnInit {
   private _profile;
   private _memberSince;
 
+  private _steamLink;
+
   private _publicProfileSub;
 
   constructor(private _activatedRoute: ActivatedRoute,
@@ -27,6 +29,7 @@ export class PublicProfileComponent implements OnInit {
       this._publicProfileSub = this._profileService.getPublicProfile(this._paramID).subscribe(result => {
         this._profile = result.profile;
         this.formatmemberSince(this._profile.joined);
+        this._steamLink = 'http://steamcommunity.com/id/' + this._profile.steam;
         if(result.status == 'success') {
           this._publicProfileSub.unsubscribe();
         }

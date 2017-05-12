@@ -18,33 +18,100 @@
             <td><input class="form-control" type="text" [(ngModel)]="_profile.familyName" ></td>
           </tr>
           <tr>
-            <td>Country:</td>
-            <td><img src="img/flags/_wales.png"> Wales</td>
+            <td>Age:</td>
+            <td><input class="form-control" type="number" [(ngModel)]="_profile.age" ></td>
           </tr>
-          <button id="submitButton" name="submitButton" class="btn btn-success" (click)="updateProfile()">Edit</button>
         </tbody>
       </table>
     </div>
     <div class="col-sm-6 col-md-6">
       <table>
         <thead>
-          <th>Personal</th>
+          <th>Gaming Information</th>
         </thead>
         <tbody>
           <tr>
-            <td>First Name:</td>
-            <td><input class="form-control" type="text" id="example-text-input"></td>
+            <td>Windows Sensitivity:</td>
+            <td><input class="form-control" type="text"  [(ngModel)]="_profile.gamingInfo.windowsSense"></td>
           </tr>
           <tr>
-            <td>Family Name:</td>
-            <td><input class="form-control" type="text" id="example-text-input"></td>
+            <td>In-game Sensitivity:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.gamingInfo.inGameSense"></td>
           </tr>
           <tr>
-            <td>Country:</td>
-            <td><img src="img/flags/_wales.png"> Wales</td>
+            <td>In-game Resolution:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.gamingInfo.inGameRes"></td>
+          </tr>
+          <tr>
+            <td>Refresh Rate:</td>
+            <td><input class="form-control" type="text"  [(ngModel)]="_profile.gamingInfo.refreshRate"></td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div class="col-sm-6 col-md-6">
+      <table>
+        <thead>
+          <th>Computer Specifications</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>OS:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.os"></td>
+          </tr>
+          <tr>
+            <td>CPU:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.cpu"></td>
+          </tr>
+          <tr>
+            <td>Memory:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.memory"></td>
+          </tr>
+          <tr>
+            <td>Hard Drive:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.hardDrive"></td>
+          </tr>
+          <tr>
+            <td>Video Card:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.videoCard"></td>
+          </tr>
+          <tr>
+            <td>Headphones:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.headPhones"></td>
+          </tr>
+          <tr>
+            <td>Monitor:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.monitor"></td>
+          </tr>
+          <tr>
+            <td>Mouse:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.mouse"></td>
+          </tr>
+          <tr>
+            <td>Mousepad:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.mousepad"></td>
+          </tr>
+          <tr>
+            <td>Keyboard:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.compSpecs.keyboard"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="submitButton" name="submitButton" class="btn btn-success" (click)="updateProfile()">Edit</button>
+    </div>
+    <div class="col-sm-6 col-md-6">
+      <table>
+        <thead>
+          <th>Contact</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Steam:</td>
+            <td><input class="form-control" type="text" [(ngModel)]="_profile.steam"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
   </div>
 </div>

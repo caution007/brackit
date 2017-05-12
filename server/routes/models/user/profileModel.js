@@ -5,10 +5,16 @@ var profileSchema = new mongoose.Schema ({
   username: String,
   firstName: String,
   familyName: String,
+  age: Number,
   tournaments: Array,
   joined: Date,
   matches: Array,
-  teams: Array
+  teams: Array,
+  compSpecs: Object,
+  steam: String,
+  gamingInfo: Object,
+  biography: String
+
 }, {
   versionKey: false
 });
