@@ -21,7 +21,7 @@ var Profile = require('./models/user/profileModel').Profile;
 
 // api listing //
 router.get('/', (req, res) => {
-  res.send('api works');
+  res.send('API is active');
 });
 
 // TOURNAMENT //

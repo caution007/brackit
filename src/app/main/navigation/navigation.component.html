@@ -23,13 +23,13 @@
                         <a class="dropdown-toggle" data-toggle="dropdown">{{_user.username}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                              <li>
-                                <a routerLink="/profile" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Profile</a>
+                                <a routerLink="/profile" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Account</a>
                             </li>
                             <li>
-                                <a routerLink="/usertournaments" routerLinkActive="active">Tournaments</a>
+                                <a routerLink="/usertournaments" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Tournaments</a>
                             </li>
                             <li>
-                                <a routerLink="/userteams" routerLinkActive="active">Teams</a>
+                                <a routerLink="/userteams" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Teams</a>
                             </li>
                         </ul>
                     </li>

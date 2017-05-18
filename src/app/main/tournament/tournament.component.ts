@@ -71,6 +71,8 @@ export class TournamentComponent implements OnInit {
     let type = this._enumConverter.tournamentTypeToEnum("" + parentTournament.type);
     this._tournamentService.getAllTournamentInfo(type, parentTournament._id).subscribe(childTournament => {
       this._tournament = this._tournamentFactory.createTournament(parentTournament, childTournament, type);
+
+      
       console.log(this._tournament);
 
       if (this._tournament.getTeams().length != 0) {

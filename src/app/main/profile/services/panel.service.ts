@@ -15,7 +15,7 @@ export class PanelService {
     return this._panelVal;
   }
 
-  setPanel(panel) {
+  private setPanel(panel) {
     this._panel.next(panel);
   }
 
@@ -28,3 +28,4 @@ export class PanelService {
     return this._selectedId;
   }
 }
+

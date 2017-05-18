@@ -10,19 +10,19 @@
             <div class="col-md-12">
 
                 <ul id="tournamentTabs" class="nav nav-tabs nav-justified">
-                    <li class="active"><a href="#information-tab" data-toggle="tab"><i class="fa fa-tree"></i> Information</a>
+                    <li class="active"><a href="#information-tab" data-toggle="tab"><i class="fa fa-info-circle"></i> Information</a>
                     </li>
-                    <li class=""><a href="#rules-tab" data-toggle="tab"><i class="fa fa-tree"></i> Rules</a>
+                    <li class=""><a href="#rules-tab" data-toggle="tab"><i class="fa fa-gavel"></i> Rules</a>
                     </li>
-                    <li class="" *ngIf="_tournament.getCompetitorType() == 0"><a href="#teams-tab" data-toggle="tab"><i class="fa fa-car"></i> Players</a>
+                    <li class="" *ngIf="_tournament.getCompetitorType() == 0"><a href="#teams-tab" data-toggle="tab"><i class="fa fa-users"></i> Players</a>
                     </li>
-                    <li class="" *ngIf="_tournament.getCompetitorType() == 1"><a href="#teams-tab" data-toggle="tab"><i class="fa fa-car"></i> Teams</a>
+                    <li class="" *ngIf="_tournament.getCompetitorType() == 1"><a href="#teams-tab" data-toggle="tab"><i class="fa fa-users"></i> Teams</a>
                     </li>
-                    <li class=""><a href="#table-tab" data-toggle="tab"><i class="fa fa-support"></i> Table</a>
+                    <li class=""><a href="#table-tab" data-toggle="tab"><i class="fa fa-sitemap"></i> Table</a>
                     </li>
-                    <li class=""><a href="#fixtures-tab" data-toggle="tab"><i class="fa fa-database"></i> Fixtures</a>
+                    <li class=""><a href="#fixtures-tab" data-toggle="tab"><i class="fa fa-crosshairs"></i> Fixtures</a>
                     </li>
-                    <li class=""><a href="#results-tab" data-toggle="tab"><i class="fa fa-database"></i> Results</a>
+                    <li class=""><a href="#results-tab" data-toggle="tab"><i class="fa fa-crosshairs"></i> Results</a>
                     </li>
                     <li class="" *ngIf="_auth.authenticated() && _tournament.getRegistrationType() == 1 && !_tournament.getStarted()">
                         <a href="#signup-tab" data-toggle="tab">

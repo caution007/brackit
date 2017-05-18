@@ -1,48 +1,48 @@
 import { NgModule, Component, Compiler, ViewContainerRef, ViewChild,
    Input, ComponentRef, ComponentFactory, ComponentFactoryResolver, ChangeDetectorRef } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
 import { FormsModule } from '@angular/forms'
-
+import { BrowserModule } from '@angular/platform-browser'
 
 @Component({
   selector: 'panel-wrapper',
   template: `<div #view></div>`
 })
 export class PanelWrapper {
-  @ViewChild('view', {read: ViewContainerRef}) target: ViewContainerRef;
+  @ViewChild('view', { read: ViewContainerRef }) view: ViewContainerRef;
+  
   @Input() panel;
   
-  private _compRef: ComponentRef<Component>;
-  private _isViewInitialized: Boolean = false;
+  private _component: ComponentRef<Component>;
+  private _view = false;
 
   constructor(private _componentFactoryResolver: ComponentFactoryResolver, 
                 private _compiler: Compiler) {}
 
-  updateComponent() {
-    if (!this._isViewInitialized) {
+  changeComponent() {
+    if (!this._view) {
       return;
     }
     
-    if (this._compRef) {
-      this._compRef.destroy();
+    if (this._component) {
+      this._component.destroy();
     }
 
-    let factory = this._componentFactoryResolver.resolveComponentFactory(this.panel);
-    this._compRef = this.target.createComponent(factory)
-  }
-
-  ngOnChanges() {
-    this.updateComponent();
+    let componentFactory = this._componentFactoryResolver.resolveComponentFactory(this.panel);
+    this._component = this.view.createComponent(componentFactory)
   }
 
   ngAfterViewInit() {
-    this._isViewInitialized = true;
-    this.updateComponent();  
+      this._view = true;
+      this.changeComponent();  
+    }
+
+  ngOnChanges() {
+    this.changeComponent();
   }
 
   ngOnDestroy() {
-    if (this._compRef) {
-      this._compRef.destroy();
+    if (this._component) {
+      this._component.destroy();
     }    
   }
 }
