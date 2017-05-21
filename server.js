@@ -37,7 +37,7 @@ app.get('*', (req, res) => {
 });
 
 
-// Socket.io //
+// Socket.io match chat //
 io.on('connection', (socket) => {
   console.log('user connected');
   

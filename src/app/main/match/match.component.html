@@ -19,7 +19,7 @@
                     </div>
                     <div class="panel-body" *ngIf="_match.tournament.competitorType == 'Team'">
                         <ul class="list-group" *ngFor="let player of _match.teams[0].members">
-                          <li class="list-group-item"><a (click)="navToPlayer(player.id)"><i><img src="img/flags/_wales.png"></i> {{player.username}}</a></li>
+                          <li class="list-group-item"><a (click)="navToPlayer(player.id)">{{player.username}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4><i class="fa fa-fw fa-comments"></i> Lorem Ipsum</h4>
+                        <h4><i class="fa fa-fw fa-comments"></i> </h4>
                     </div>
                     <div class="panel-body">
                         <form class="form-horizontal">
@@ -80,7 +80,7 @@
                     </div>
                     <div class="panel-body" *ngIf="_match.tournament.competitorType == 'Team'">
                         <ul class="list-group" *ngFor="let player of _match.teams[1].members">
-                          <li class="list-group-item"><a (click)="navToPlayer(player.id)"><i><img src="img/flags/_wales.png"></i> {{player.username}}</a></li>
+                          <li class="list-group-item"><a (click)="navToPlayer(player.id)">{{player.username}}</a></li>
                         </ul>
                     </div>
                 </div>

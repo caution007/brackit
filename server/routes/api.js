@@ -495,23 +495,17 @@ router.post('/fixtures', (req, res) => {
       for (let i = 0; i < teams.length; i++) {
         competitorLst.push(teams[i]);
       }
-
-      if (competitorLst.length % 2 != 0) { 
-        competitorLst.push("Bye"); 
-      }
-
+      
       let fixturesNum = competitorLst.length - 1;
       let fixturesHalf = competitorLst.length / 2;
 
       let competitors = competitorLst.slice();
       competitors.splice(0, 1);
       let competitorsNum = competitors.length;
-      console.log(competitors);
       let haCounter = 0; // Home and Away counter for team 0
       let date;
-      for (let i = 0; i < fixturesNum; i++) {
-        console.log("Fixture " + (i + 1));
 
+      for (let i = 0; i < fixturesNum; i++) {
         let team = i % competitorsNum;
 
         if (i == 0) {
@@ -521,24 +515,16 @@ router.post('/fixtures', (req, res) => {
         }
         
         if (haCounter == 0) {
-          console.log(competitors[team] + " vs " + competitorLst[0] + " start: " + date);
-
           checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[team], competitorLst[0], date, req.body.rType);
-
           haCounter = 1;
         } else {
-          console.log(competitorLst[0] + " vs " + competitors[team] + " start: " + date);
-
           checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitorLst[0], competitors[team], date, req.body.rType);
-
           haCounter = 0;
         }
 
         for (let l = 1; l < fixturesHalf; l++) {
           let teamOne = (i + l) % competitorsNum;
           let teamTwo = (i + competitorsNum - l) % competitorsNum;
-          console.log(competitors[teamOne] + " vs " + competitors[teamTwo] + " start: " + date)
-
           checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[teamOne], competitors[teamTwo], date,req.body.rType);
         }
 
@@ -962,7 +948,6 @@ router.post('/team', (req, res) => {
     matches: []
   })
 
-
   team.saveAsync()
     .then((team) => {
       addTeamToProfile(req.body.team.owner, team._id);
@@ -982,7 +967,6 @@ function addTeamToProfile(profileId, teamId) {
       res.json({ 'status': 'error', 'error': e });
     })
     .error(console.error);
-  
 }
 
 // POST a new member to a team //
@@ -991,9 +975,6 @@ router.post('/team/join', (req, res) => {
 
   Team.findByIdAsync(req.body.teamId)
     .then((team) => {
-      console.log(req.body.joinPassword);
-      console.log(team.joinPassword);
-
       if (req.body.joinPassword == team.joinPassword) {
         Team.findOneAndUpdateAsync({ _id: req.body.teamId }, { $push: {members: member}})
         .then((member) => {

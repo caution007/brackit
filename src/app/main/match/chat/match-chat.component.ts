@@ -25,15 +25,13 @@ export class MatchChatComponent implements OnInit {
     
     this._matchChatService.getMessages(this._userDetails.match).subscribe(result => {
       this._messages = result.messages;
-      console.log(this._messages);
     })
 
     this._connection = this._matchChatService.listenForMessages().subscribe(message => {
-      console.log(message);
       this._messages.push(message);
     })
+
     this._matchChatService.joinMatchChat(this._userDetails.match);
-    console.log(this._userDetails);
   }
 
   sendMessage() {

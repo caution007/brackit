@@ -25,6 +25,7 @@ export class EditTournamentComponent implements OnInit {
 
   private _getMatchesSub;
   private _submitResultSub;
+  private _editTournSub;
 
   constructor(private _panelService: PanelService,
                 private _tournamentService: TournamentService) { 
@@ -69,8 +70,10 @@ export class EditTournamentComponent implements OnInit {
 
   editTournament(tournament) {
     if(confirm("Are you sure you want to edit the tournament?")) {
-      this._tournamentService.updateTournament(tournament).subscribe(result => {
-        console.log(result);
+      this._editTournSub = this._tournamentService.updateTournament(tournament).subscribe(result => {
+        if (result.status == 'success') {
+          this._editTournSub.unsubscribe();
+        }
       })
     }
   }

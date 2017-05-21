@@ -32,14 +32,11 @@ export class MatchChatService {
   listenForMessages() {
     let obsrv = new Observable(obsrv => {
       this._socket = io(this._url);
-      this._socket.on('message', (data) => {
-        obsrv.next(data);    
+      this._socket.on('message', (object) => {
+        obsrv.next(object);    
       });
 
-      return () => {
-        this._socket.disconnect();
-      };  
-
+      return () => { this._socket.disconnect(); };  
     })   
 
     return obsrv;
