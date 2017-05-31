@@ -62,9 +62,6 @@ export class EditTournamentComponent implements OnInit {
         id).subscribe(childTournament => {
           this._tournamentType = childTournament;
           this._dateTime = this._tournament.start.slice(0, -5);
-          console.log(this._dateTime);
-          console.log(this._tournament);
-          console.log(this._tournamentType);
         });
   }
 

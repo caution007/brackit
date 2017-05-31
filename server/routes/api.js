@@ -19,7 +19,6 @@ var Match = require('./models/matches/matchModel').Match;
 var Bo1 = require('./models/matches/bo1Model').Bo1;
 var Profile = require('./models/user/profileModel').Profile;
 
-// api listing //
 router.get('/', (req, res) => {
   res.send('API is active');
 });
@@ -36,7 +35,7 @@ router.get('/tournaments', (req, res, next) => {
     .error(console.error);
 });
 
-// GET one tournament //
+// GET one tournament by id //
 router.get('/tournaments/:id', (req, res, next) => {
   Tournament.findByIdAsync(req.params.id)
     .then((tournament) => {
@@ -69,7 +68,11 @@ router.get('/tournaments/type/:type', (req, res, next) => {
     .error(console.error);
 });
 
-// GET newest tournaments //
+// GET newest tournaments
+// Uses the sortCreatedDate function to sort 
+// tournaments into descending order, by created date. 
+// It then puts the three newest tournaments into an array,
+// this is sent as the result.
 router.get('/newesttournaments', (req, res) => {
   Tournament.findAsync({})
     .then((tournaments) => {
@@ -83,11 +86,16 @@ router.get('/newesttournaments', (req, res) => {
     .error(console.error);
 });
 
+// Sorts an array that includes created date elements, into descending order
 function sortCreatedDate(a, b) {
   return new Date(b.created) - new Date(a.created);
 }
 
-// GET fixtures for a given tournament, by tournament id //
+// GET fixtures for a given tournament, by tournament id 
+// The match is found using  the tournament id.
+// To find all fixtures, an anonymous function is used each loop
+// with a count. Each match is pushed to an object with two
+// arrays; results and fixtures. The object is sent as the result.
 router.get('/tournament/matches/:id', (req, res) => {
   Match.findAsync({ 'tournamentId': req.params.id })
     .then((match) => {
@@ -120,11 +128,12 @@ router.get('/tournament/matches/:id', (req, res) => {
     })
 })
 
+// Sorts an array that includes start date elements, into descending order
 function sortStartDate(a, b) {
   return new Date(a.start) - new Date(b.start);
 }
 
-// GET roundrobin tournament by tournament id //
+// GET roundrobin tournament by tournament id 
 router.get('/roundrobin/:tournamentid', (req, res) => {
   RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
     .then((tournament) => {
@@ -136,44 +145,16 @@ router.get('/roundrobin/:tournamentid', (req, res) => {
     .error(console.error);
 });
 
-// GET tournament teams and players by tournament id //
+// GET tournament teams and players by tournament id
+// This first finds a tournament, by tournament id.
+// It then uses a switch statement depending on the type
+// of the tournament.
 router.get('/tournament/teams/:tournamentid', (req, res, next) => {
   Tournament.findAsync({ '_id': req.params.tournamentid })
     .then((t) => {
       switch (t[0].type) {
         case 'Round Robin':
-          RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
-            .then((tt) => {
-              let teams = [];
-              let count = 0;
-              if (tt[0].teams.length == 0) {
-                res.status(200).json([]);
-              } else {
-                for (let i = 0; i < tt[0].teams.length; i++) {
-                  (function(index) {
-                    Team.findAsync({ '_id': tt[0].teams[index].id })
-                      .then((tm) => {
-                        tm = tm[0].toObject();
-                        delete tm.joinPassword;
-                        teams.splice(index, 0, tm);
-                        count++;
-                        
-                        if (count > (tt[0].teams.length - 1)) {
-                          res.status(200).json(teams);
-                        }
-                      })
-                      .catch((e) => {
-                        res.json({ 'status': 'error', 'error': e });
-                      })
-                      .error(console.error);
-                  }(i))
-                }
-              }
-            })
-            .catch((e) => {
-              res.json({ 'status': 'error', 'error': e });
-            })
-            .error(console.error);
+          getTeamsAndPlayersRoundRobin(res, req.params.tournamentid);
           break;
       }
     })
@@ -181,43 +162,95 @@ router.get('/tournament/teams/:tournamentid', (req, res, next) => {
     .error(console.error);
 });
 
-// GET tournament players by tournament id //
+// This function takes the result callback and the current
+// tournament id as parameters.
+// The torunament id is used to get the RoundRobin League.
+// A check is in place so that if there are not teams, an empty
+// array is sent back as a result.
+// An anonymous function is used for each loop of the for-loop,
+// this finds each team and splices them into an array.
+function getTeamsAndPlayersRoundRobin(res, tournId) {
+  RoundRobinLeague.findAsync({ 'tournamentId': tournId })
+    .then((tt) => {
+      let teams = [];
+      let count = 0;
+      if (tt[0].teams.length == 0) {
+        res.status(200).json([]);
+      } else {
+        for (let i = 0; i < tt[0].teams.length; i++) {
+          (function(index) {
+            Team.findAsync({ '_id': tt[0].teams[index].id })
+              .then((tm) => {
+                tm = tm[0].toObject();
+                delete tm.joinPassword;
+                teams.splice(index, 0, tm);
+                count++;
+                
+                if (count > (tt[0].teams.length - 1)) {
+                  res.status(200).json(teams);
+                }
+              })
+              .catch((e) => {
+                res.json({ 'status': 'error', 'error': e });
+              })
+              .error(console.error);
+          }(i))
+        }
+      }
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+}
+
+// GET tournament players by tournament id 
+// A switch statement is used depending on the 
+// tournament type.
 router.get('/tournament/players/:tournamentid', (req, res, next) => {
   Tournament.findAsync({ '_id': req.params.tournamentid })
     .then((t) => {
       switch (t[0].type) {
         case 'Round Robin':
-          RoundRobinLeague.findAsync({ 'tournamentId': req.params.tournamentid })
-            .then((tt) => {
-              let players = [];
-              let count = 0;
-              for (let i = 0; i < tt[0].teams.length; i++) {
-                (function(index) {
-                  Profile.findAsync({ '_id': tt[0].teams[index].id })
-                  .then((p) => {
-                    players.splice(index, 0, p[0])
-                    count++;
-                    if (count > (tt[0].teams.length - 1)) {
-                      res.status(200).json(players);
-                    }
-                  })
-                  .catch((e) => {
-                    res.json({ 'status': 'error', 'error': e });
-                  })
-                  .error(console.error);
-                }(i))
-              }
-            })
-            .catch((e) => {
-              res.json({ 'status': 'error', 'error': e });
-            })
-            .error(console.error);
+          getTournamentPlayers(res, req.params.tournamentid);
           break;
       }
     })
     .catch(next)
     .error(console.error);
 });
+
+// The function takes the result callback and 
+// the current tournament id as parameters.
+// An anonymous function is used for each loop of the for-loop,
+// this finds each profile and splices them into an array.
+function getTournamentPlayers(res, tournId) {
+  RoundRobinLeague.findAsync({ 'tournamentId': tournId })
+    .then((tt) => {
+      let players = [];
+      let count = 0;
+      for (let i = 0; i < tt[0].teams.length; i++) {
+        (function(index) {
+          Profile.findAsync({ '_id': tt[0].teams[index].id })
+          .then((p) => {
+            players.splice(index, 0, p[0])
+            count++;
+            if (count > (tt[0].teams.length - 1)) {
+              res.status(200).json(players);
+            }
+          })
+          .catch((e) => {
+            res.json({ 'status': 'error', 'error': e });
+          })
+          .error(console.error);
+        }(i))
+      }
+    })
+    .catch((e) => {
+      res.json({ 'status': 'error', 'error': e });
+    })
+    .error(console.error);
+}
 
 // POST a new partaker to the tournament //
 router.post('/tournament/join', (req, res) => {
@@ -292,10 +325,12 @@ router.post('/tournament/leavetournament', (req, res) => {
   }
 })
 
-// POST a tournament //
+// POST a tournament 
+// Initially a tournament model is creating, using the data
+// sent from the front end. The tournament type and 
+// tournament are then pushed to the database.
 router.post('/tournament', (req, res) => {
-  console.log(req.body.tournament);
-  let start = req.body.tournament[6] + "T" + req.body.tournament[7] + ":00Z";
+  let start = req.body.tournament[6] + "T" + req.body.tournament[7] + ":00Z"; // Combines date and time, to create a string that MongoDB will understand.
   let teamLimit = {current: 0, max: req.body.tournament[12]};
   let date = new Date().toLocaleString();
 
@@ -335,6 +370,7 @@ router.post('/tournament', (req, res) => {
 
 // POST a tournament type //
 function postTournamentType(type, rType, teams, id) {
+  // If teams is not list, it will equal an empty array
   if (rType == 'List') {
     teams = registrationTypeCheck(teams);
   }
@@ -357,6 +393,8 @@ function postTournamentType(type, rType, teams, id) {
   }
 }
 
+// This function creates an array of team/player elements
+// for a list tournament.
 function registrationTypeCheck(teams) {
   let splitTeams = teams.split('\n');
   let array = [];
@@ -375,6 +413,7 @@ function createLeagueTeamObject(id, name) {
   return team;
 }
 
+// GET all tournaments a player is currently taking part in
 router.get('/tournaments/joined/:userId', (req, res) => {
   let tournaments = {team: []};
   Profile.findByIdAsync(req.params.userId)
@@ -445,7 +484,8 @@ router.get('/tournaments/userid/:userId', (req, res, next) => {
     .error(console.error);
 })
 
-// START tournament //
+// START tournament
+// Sets the tournaments set element to true
 router.post('/starttournament', (req, res, next) => {
   Tournament.findByIdAndUpdateAsync(
     req.body.tournId,
@@ -480,6 +520,7 @@ function shuffleArray(array) {
 // MATCHES AND FIXTURES //
 
 // POST fixtures, when tournament starts //
+// This fixture function currently only supports Round Robin
 router.post('/fixtures', (req, res) => {
   RoundRobinLeague.findAsync({ 'tournamentId': req.body.id })
     .then((tournament) => {
@@ -489,6 +530,7 @@ router.post('/fixtures', (req, res) => {
         teams.push([tournament.teams[i].name, tournament.teams[i].id]);
       }
       
+      // Shuffles all teams, only random seeding available
       teams = shuffleArray(teams);
 
       let competitorLst = [];
@@ -499,21 +541,30 @@ router.post('/fixtures', (req, res) => {
       let fixturesNum = competitorLst.length - 1;
       let fixturesHalf = competitorLst.length / 2;
 
+      // Next two lines create a new array without, element 0 (participant 1)
       let competitors = competitorLst.slice();
       competitors.splice(0, 1);
       let competitorsNum = competitors.length;
       let haCounter = 0; // Home and Away counter for team 0
       let date;
 
+      // This is the parent loop, this for-loop creates 
+      // each round of fixtures
       for (let i = 0; i < fixturesNum; i++) {
-        let team = i % competitorsNum;
+        let team = i % competitorsNum; // Gets the team that is currently directly below the spliced team, in Round Robin
 
+        // If it is the first loop, all fixtures in first round will have
+        // the given start date.
+        // Every other round, will use a date that has been modified using
+        // fixture interval.
         if (i == 0) {
           date = req.body.start;
         } else {
           date = getAndSetDateFixture(date, req.body.interval);
         }
         
+        // The check is in place so that the spliced team
+        // is not always on the left hand side of the fixture
         if (haCounter == 0) {
           checkMatchAndCreate(req.body.id, req.body.type, req.body.mType, competitors[team], competitorLst[0], date, req.body.rType);
           haCounter = 1;
@@ -522,6 +573,8 @@ router.post('/fixtures', (req, res) => {
           haCounter = 0;
         }
 
+        // This child for-loop creates the rest of the fixtures
+        // for the round.
         for (let l = 1; l < fixturesHalf; l++) {
           let teamOne = (i + l) % competitorsNum;
           let teamTwo = (i + competitorsNum - l) % competitorsNum;
@@ -540,6 +593,7 @@ router.post('/fixtures', (req, res) => {
   
 });
 
+// Increases the date using the fixture interval
 function getAndSetDateFixture(string, interval) {
   let date = new Date(string);
   let newDate = date.getDate() + interval;
@@ -547,6 +601,7 @@ function getAndSetDateFixture(string, interval) {
   return date;
 }
 
+// Checks the match type and posts the fixture to the database
 function checkMatchAndCreate(id, type, mType, teamOne, teamTwo, date, rType) {
   let match = matchModel(id, mType, date);
   let matchType;
@@ -561,6 +616,7 @@ function checkMatchAndCreate(id, type, mType, teamOne, teamTwo, date, rType) {
   saveBo1(matchType);
 }
 
+// Saves a match taken as a parameter to the database
 function saveMatch(m) {
   m.saveAsync()
     .then((m) => {
@@ -571,6 +627,7 @@ function saveMatch(m) {
     .error(console.error);
 }
 
+// Saves a best of one tournament, taken as a parameter, to the database
 function saveBo1(bo1) {
   bo1.saveAsync()
     .then((bo1) => {
@@ -581,6 +638,7 @@ function saveBo1(bo1) {
     .error(console.error);
 }
 
+// Creates a match MongoDB model
 function matchModel(id, type, start) {
   let m = new Match({
     tournamentId: id,
@@ -593,12 +651,14 @@ function matchModel(id, type, start) {
   return m;
 }
 
+// Creates a bo1 MongoDB model and pushes it to the database
 function bo1Model(teamOne, teamTwo, id, rType) {
   let partakerOne = {id: teamOne[1], name: teamOne[0], score: ''};
   let partakerTwo = {id: teamTwo[1], name: teamTwo[0], score: ''};
   let partakers = [partakerOne, partakerTwo];
 
   let resultInputObj;
+  // If the tournament is of type List, there does not need to be a resultInput object
   if(rType == 'List') {
     resultInputObj = {};
   } else if (rType == 'Signup'){
@@ -615,9 +675,10 @@ function bo1Model(teamOne, teamTwo, id, rType) {
   return bo1;
 };
 
+// RESULTS //
+
 // POST match result //
 router.post('/matchresult', (req, res) => {
-    console.log(req.body);
     switch(req.body.matchType) {
       case 'bo1':
         getMatchType(
@@ -636,6 +697,11 @@ router.post('/matchresult', (req, res) => {
     }
 })
 
+// This function gets the match type model, depending 
+// on the matchType element and passes it through to
+// the next check.
+// If the result is of type List, no check are needed and
+// it goes straight to submitting an official result
 function getMatchType(
   matchId, matchType, participentCheck, scoreOne, scoreTwo, incDraws, participents, tournId, points, regType, res) {
   switch(matchType) {
@@ -643,7 +709,6 @@ function getMatchType(
       if (regType == 'Signup') {
         Bo1.findByIdAsync( matchId )
         .then((bo1) => {
-          console.log('bo1');
           checkIfOpponentSubmittedResult(
           matchId,
           matchType, 
@@ -664,7 +729,6 @@ function getMatchType(
         .error(console.error);
       break;
     } else if (regType == 'List') {
-      console.log('hype');
       submitOfficialResult(
             matchId, scoreOne, scoreTwo, participentCheck, participents, tournId, points, res);
     }
@@ -672,13 +736,16 @@ function getMatchType(
   }
 }
 
+// This function checks the resultInput object that is an 
+// element of the match object that has been passed through as a parameter.
+// If the opposing participient has submitted a result and the result
+// that has been submitted match, then the official result path begins.
+// Otherwise, potential results are swapped.
 function checkIfOpponentSubmittedResult(
   matchId, matchType, participentCheck, scoreOne, scoreTwo, incDraws, participents, tournId, match, points, regType, res) {
-  console.log('checkIfOpponentSubmittedResult');
   switch(matchType) {
     case 'bo1':
       if (participentCheck == 0) {
-        console.log('participentCheck 0');
         if (!match.resultInput.partakerTwo.scoreOne && !match.resultInput.partakerTwo.scoreTwo) {
          submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res);
         } else if (match.resultInput.partakerTwo.scoreOne && match.resultInput.partakerTwo.scoreTwo) {
@@ -686,9 +753,7 @@ function checkIfOpponentSubmittedResult(
             incDraws, scoreOne, scoreTwo, matchId, participentCheck, participents, tournId, points, res);
         }
       } else if (participentCheck == 1) {
-        console.log('participentCheck 1');
         if (!match.resultInput.partakerOne.scoreOne && !match.resultInput.partakerOne.scoreTwo) {
-          console.log('true');
          submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res);
         } else if (match.resultInput.partakerOne.scoreOne && match.resultInput.partakerOne.scoreTwo) {
           officialResultCheck(
@@ -699,9 +764,11 @@ function checkIfOpponentSubmittedResult(
   }
 }
 
+// This function checks to see if the scores submitted
+// are the same as the current potential result, if not
+// the potential result is updated.
 function officialResultCheck(
   incDraws, scoreOne, scoreTwo, matchId, participentCheck, participents, tournId, points, res) {
-    console.log('official');
   Bo1.findByIdAsync(matchId)
     .then((bo1) => {
       if (participentCheck == 0) {
@@ -719,7 +786,6 @@ function officialResultCheck(
           submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res);
         }
       }
-      
     })
     .catch((e) => {
       console.log(e);
@@ -727,16 +793,18 @@ function officialResultCheck(
     .error(console.error);
 }
 
+// This function sets the correct scores of a given fixture.
+// The complete method of that match is then set to true.
+// It then sends a success status result object, back to the front end.
+// Finally, the points and the finish check functions are called,
 function submitOfficialResult(
   matchId, scoreOne, scoreTwo, participentCheck, participents, tournId, points, res) {
   let victor = getVictor(scoreOne, scoreTwo, participents);
-  console.log(victor);
   let myIndex = {}
   Bo1.findOneAndUpdateAsync(
     { '_id': matchId },
     { $set: {'partakers.0.score': scoreOne, 'partakers.1.score': scoreTwo, 'victor': victor.victor} })
       .then((bo1) => {
-        console.log(bo1);
         Match.findByIdAndUpdateAsync(
           bo1.matchId,
           { $set: {'complete': true} }
@@ -757,13 +825,18 @@ function submitOfficialResult(
       .error(console.error);
 }
 
+// This function submits the points for a given fixture.
+// Points are increased using the points from the given 
+// tournaments database document. 
+// If the victor object, that is being used as the check,
+// is undefined, then the game is a draw and the points will be 
+// updated to match that
 function submitTournamentPoints(tournId, scoreOne, scoreTwo, participents, points, victor) {
   if(victor) {
     RoundRobinLeague.findOneAndUpdateAsync(
       { 'tournamentId': tournId, 'teams.id': victor.victor.id },
       { $inc: {'teams.$.wins': 1, 'teams.$.points': points.win, 'teams.$.played': 1} })
       .then(() => {
-        console.log(victor.loser.id);
         RoundRobinLeague.findOneAndUpdateAsync(
           { 'tournamentId': tournId, 'teams.id': victor.loser.id },
           { $inc: {'teams.$.losses': 1, 'teams.$.played': 1} })
@@ -793,6 +866,9 @@ function submitTournamentPoints(tournId, scoreOne, scoreTwo, participents, point
   }
 }
 
+// This function checks to see what fixture participent
+// is the victor and which is the loser. If the match is a draw,
+// the object will return as false
 function getVictor(scoreOne, scoreTwo, participents) {
   let victor = {victor: null, loser: null};
 
@@ -809,8 +885,9 @@ function getVictor(scoreOne, scoreTwo, participents) {
   return victor;
 }
 
+// This function submits a new potential result and
+// replaces the old potential result.
 function submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, res) {
-  console.log('submitPotentialResult');
   if (participentCheck == 0) {
     Bo1.findOneAndUpdateAsync(
       { '_id': matchId }, 
@@ -828,7 +905,6 @@ function submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, re
         })
         .error(console.error);
   } else if (participentCheck == 1) {
-    console.log(scoreOne + ' ' + scoreTwo);
     Bo1.findOneAndUpdateAsync(
       { '_id': matchId }, 
       { $set: {
@@ -839,7 +915,6 @@ function submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, re
       } })
         .then((bo1) => {
           res.json({ 'status': 'success', 'matchType': bo1 });
-          console.log('done');
         })
         .catch((e) => {
           console.log(e);
@@ -848,17 +923,17 @@ function submitPotentialResult(matchId, participentCheck, scoreOne, scoreTwo, re
   }
 }
 
+// This function finds all matches that are linked to a single tournament.
+// A for-loop then checks to see if these matches are complete.
+// If all are complete, then the tournament is set to complete.
 function tournamentFinishedCheck(tournId) {
-  console.log('done');
   Match.findAsync({ 'tournamentId': tournId })
     .then((matches) => {
       let count = 0;
       
       for (let i = 0; i < matches.length; i++) {
-        console.log(matches[i].complete);
         if(matches[i].complete) {
           count++;
-          console.log(count);
         }
       }
       
@@ -892,7 +967,7 @@ router.get('/teams', (req, res, next) => {
     .error(console.error);
 });
 
-// GET one team, by id //
+// GET one team, by id, along with all members //
 router.get('/team/:id', (req, res) => {
   Team.findByIdAsync(req.params.id)
     .then((team) => {
@@ -932,7 +1007,6 @@ router.get('/team/:id', (req, res) => {
 
 // POST new team //
 router.post('/team', (req, res) => {
-  console.log(req.body.team);
 
   let members = [{
     id: req.body.team.owner,
@@ -959,6 +1033,7 @@ router.post('/team', (req, res) => {
     .error(console.error);
 })
 
+// Adds the team id to a member profile
 function addTeamToProfile(profileId, teamId) {
   Profile.findByIdAndUpdate(
     profileId,
@@ -1000,8 +1075,6 @@ function createTeamMemberObject(id, username) {
 }
 
 router.post('/team/leave', (req, res) => {
-  console.log(req.body.teamId);
-  console.log(req.body.memberId);
   Team.findByIdAndUpdateAsync(
     req.body.teamId,
     { $pull: { 'members': { id: req.body.memberId } } })
@@ -1058,7 +1131,6 @@ router.post('/profile', (req, res, next) => {
 
 function createProfile(id, username) {
   let date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-  console.log(username);
   let profile = new Profile({
     userId: id,
     username: username,
@@ -1227,7 +1299,6 @@ router.get('/match/:id', (req, res, next) => {
 })
 
 router.post('/matchmessage', (req, res) => {
-  console.log(req.body);
   Match.findByIdAndUpdateAsync(
     req.body.matchId,
     { $push: {messages: req.body.msg} })

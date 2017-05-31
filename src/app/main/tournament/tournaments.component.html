@@ -13,13 +13,16 @@
                   <tr>
                       <th>Tournament</th>
                       <th>Type</th>
+                      <th>Game</th>
                       <th>Registration Type</th>
+                      
                   </tr>
               </thead>
               <tbody>
                 <tr *ngFor='let tournament of _tournaments' class='tourn-row' (click)='navToTournament(tournament._id)'>
                   <td>{{ tournament.name }}</td>
                   <td>{{ tournament.type }}</td>
+                  <td>{{ tournament.game }}</td>
                   <td>{{ tournament.registrationType }}</td>
                 </tr>
               </tbody>

@@ -5,17 +5,17 @@ const io = require('socket.io')(server);
 const path = require('path');
 const bodyParser = require('body-parser');
 
-// Get our API routes
+// Get API route //
 const api = require('./server/routes/api');
 
-// Parsers for POST data
+// Parsers for POST data //
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Distribution path //
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Cross Origin middleware
+// Cross Origin middleware //
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -28,10 +28,10 @@ app.use(function(req, res, next) {
   next();
 })
 
-// Set our api routes
+// Set api route //
 app.use('/api', api);
 
-// Catch all other routes and return the index file
+// Catch all other routes and return the index file //
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
   
   let currentMatchChat;
   socket.on('join-match-chat', (msg) => {
-    socket.join(msg);
+    socket.join(msg); // Joins specific match room, using match id
     currentMatchChat = msg;
   })
 
@@ -56,13 +56,9 @@ io.on('connection', (socket) => {
   });
 });
 
-/**
- * Get port from environment and store in Express.
- */
+// Get port from environment and store //
 const port = process.env.PORT || '3000';
 app.set('port', port);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+// Listen on port //
 server.listen(port, () => console.log(`API running on localhost:${port}`));

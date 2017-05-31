@@ -14,10 +14,6 @@
                 </li>
                 <li class=""><a href="#tournaments-tab" data-toggle="tab"><i class="fa fa-trophy"></i> Tournaments</a>
                 </li>
-                <li class=""><a href="#fixtures-tab" data-toggle="tab"><i class="fa fa-crosshairs"></i> Fixtures</a>
-                </li>
-                <li class=""><a href="#results-tab" data-toggle="tab"><i class="fa fa-crosshairs"></i> Results</a>
-                </li>
                 <li class="" *ngIf="_auth.authenticated()"><a href="#join-tab" data-toggle="tab"><i class="fa fa-plus"></i> <span *ngIf="!_inTeam">Join</span><span *ngIf="_inTeam">Leave</span></a>
                 </li>
               </ul>
@@ -36,7 +32,7 @@
                             <div class="panel-heading" >
                                 <span class="fa-stack fa-5x">
                                     <div class="container">
-                                        <img class="img-responsive" src="https://hydra-media.cursecdn.com/lol.gamepedia.com/thumb/d/db/Fnaticlogo.png/120px-Fnaticlogo.png?version=7ee621d9b400c17028aa6065104ff99d">
+                                        <img class="img-responsive" src="">
                                     </div>
                                 </span>
                             </div>
@@ -91,18 +87,6 @@
                                   </tr>
                               </tbody>
                           </table>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="fixtures-tab">
-                    <div>
-                        <h4>Fixtures</h4>
-                        <span></span> 
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="results-tab">
-                    <div>
-                        <h4>Results</h4>
-                        <span></span> 
                     </div>
                 </div>
                 <div class="tab-pane fade" id="join-tab" *ngIf="_auth.authenticated()">

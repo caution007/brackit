@@ -16,9 +16,6 @@
                      <li>
                          <a routerLink="/tournaments" routerLinkActive="active">Tournaments</a>
                     </li>
-                    <li>
-                        <a>Contact</a>
-                    </li>
                     <li class="dropdown" *ngIf="_auth.authenticated() && _user">
                         <a class="dropdown-toggle" data-toggle="dropdown">{{_user.username}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -26,10 +23,7 @@
                                 <a routerLink="/profile" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Account</a>
                             </li>
                             <li>
-                                <a routerLink="/usertournaments" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Tournaments</a>
-                            </li>
-                            <li>
-                                <a routerLink="/userteams" routerLinkActive="active" (click)="_panelService.selectedPanel(0, null)">Teams</a>
+                                <a routerLink="/profile" routerLinkActive="active" (click)="_panelService.selectedPanel(5, null)">Tournaments</a>
                             </li>
                         </ul>
                     </li>

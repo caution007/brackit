@@ -80,16 +80,13 @@ export class CreateTournamentComponent implements OnInit {
 
   ngOnInit() {
     this._gameList = this._games.getGameList();
-    console.log(this._gameList);
+
     this._profileService.getProfile(this._user.user_id, this._user.username).subscribe(profile => {
       if (profile.profile.length == 1) {
         this._profile = profile.profile[0];
       }
       this._owner = this._profile._id;
     });
-
-    
-    console.log(new Date().toLocaleString());
   }
 
   gameSelected(game) {
@@ -107,7 +104,6 @@ export class CreateTournamentComponent implements OnInit {
     }
 
     if(count == (checks - 1)) {
-      console.log(this.makeTournament());
         this._createTournSub = this._tournamentService.createTournament(this.makeTournament()).subscribe(result => {
           if(result.status == 'success') {
             this._createTournSub.unsubscribe();
@@ -145,7 +141,7 @@ export class CreateTournamentComponent implements OnInit {
         this._includeDrawsAlert = boolean;
         break;
       case 7:
-        boolean = this.booleanCheckReturn(this._startDate);
+        boolean = this.booleanCheckReturn(this.dateCheck());
         this._startDateAlert = boolean;
         break;
       case 8:
@@ -169,11 +165,11 @@ export class CreateTournamentComponent implements OnInit {
         this._ownerAlert = boolean;
         break;
       case 13:
-        boolean = this.booleanCheckReturn(this.checkIfEven(this._teamLimit));
+        boolean = this.booleanCheckReturn(this.maxParticipantsCheck());
         this._teamLimitAlert = boolean;
         break;
       case 14:
-        boolean = this.booleanCheckReturn(this._fixtureInterval);
+        boolean = this.booleanCheckReturn(this.fixtureIntervalCheck());
         this._fixtureIntervalAlert = boolean;
         break;
       case 15:
@@ -181,7 +177,7 @@ export class CreateTournamentComponent implements OnInit {
         this._gameAlert = boolean;
         break;
       case 16:
-        boolean = this.booleanCheckReturn(this._points.win);
+        boolean = this.booleanCheckReturn(this.checkIfMinusOrZero(this._points.win));
         this._pointsWinAlert = boolean;
         break;
       case 17:
@@ -225,10 +221,53 @@ export class CreateTournamentComponent implements OnInit {
     return boolean;
   }
 
+  checkIfMinusOrZero(check) {
+    let boolean = false;
+
+    if(check > 0) {
+      boolean = true;
+    }
+
+    return boolean;
+  }
+
+  maxParticipantsCheck() {
+    let boolean = false;
+
+    if(this.checkIfMinusOrZero(this._teamLimit) && this.checkIfEven(this._teamLimit)) {
+      boolean = true;
+    }
+
+    return boolean;
+  }
+
+  fixtureIntervalCheck() {
+    let boolean = false;
+
+    if(this.checkIfMinusOrZero(this._fixtureInterval) && (this._fixtureInterval <= 14)) {
+      boolean = true;
+    }
+
+    return boolean;
+  }
+
   nameCheck() {
     let boolean = false;
 
     if(this._name) {
+      boolean = true;
+    }
+
+    return boolean;
+  }
+
+  dateCheck() {
+    let boolean = false;
+    let today = new Date();
+    today.setHours(0, 0, 0, 0); // Sets time to 0, so that only dates are compared.
+    let date = new Date(this._startDate);
+
+    if(date >= today) {
       boolean = true;
     }
 
@@ -265,12 +304,7 @@ export class CreateTournamentComponent implements OnInit {
   }
 
   test() {
-    console.log(this._startDate);
-    console.log(this._startTime);
-    console.log(this._lstTeams);
     this.createTournament();
-    console.log(this._nameAlert);
-    console.log(this._type);
   }
 
 }

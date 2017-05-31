@@ -107,12 +107,12 @@
           </div>
           <!-- /.matchType selector -->
           <div class="form-group">
-              <label class="col-md-4 control-label" >Max Participants</label>
+              <label class="col-md-4 control-label" >Maximum Participants</label>
               <div class="col-md-2">
                   <input name="playerlimitinput" type="number" [(ngModel)]="_teamLimit" class="form-control input-md">
               </div>
               <div class="col-md-4">
-                  <span>Keep the number even.</span>
+                  <span>Number must be even. 2, 4, 6, 8 etc..</span>
               </div>
           </div>
           <!-- /.max participants input -->
@@ -122,7 +122,8 @@
                   <input name="fixintervalinput" type="number" [(ngModel)]="_fixtureInterval" class="form-control input-md">
               </div>
               <div class="col-md-4">
-                  <span>The amount of days between each round of fixtures.</span>
+                  <span>The amount of days between each round of fixtures.</span><br/>
+                  <span>Must be between 1-14.</span>
               </div>
           </div>
           <!-- /.fixture interval input -->
@@ -140,14 +141,14 @@
           <!-- /.points input -->
           <div class="form-group">
               <label class="col-md-4 control-label" >Start Date</label>
-              <div class="col-md-6">
+              <div class="col-md-3">
                   <input name="startdateinput" class="form-control" type="date" [(ngModel)]="_startDate">
               </div>
           </div>
           <!-- /.startDate input -->
           <div class="form-group">
               <label class="col-md-4 control-label" >Start Time</label>
-              <div class="col-md-6">
+              <div class="col-md-2">
                   <input name="starttimeinput" class="form-control" type="time" [(ngModel)]="_startTime">
               </div>
           </div>
@@ -223,12 +224,12 @@
             </div>
             <div class="col-md-12">
                 <div class="alert alert-danger fade in" *ngIf="!_teamLimitAlert">
-                    <strong>Whoops!</strong> Please choose a Tournament team limit.
+                    <strong>Whoops!</strong> There seems to be a problem with the Maximum Participants.
                 </div>              
             </div>
             <div class="col-md-12">
                 <div class="alert alert-danger fade in" *ngIf="!_fixtureIntervalAlert">
-                    <strong>Whoops!</strong> Please choose an interval between fixtures.
+                    <strong>Whoops!</strong> There seems to be a problem with the Fixture Interval.
                 </div>              
             </div>
             <div class="col-md-12">

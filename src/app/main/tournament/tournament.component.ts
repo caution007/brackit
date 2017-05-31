@@ -72,21 +72,15 @@ export class TournamentComponent implements OnInit {
     this._tournamentService.getAllTournamentInfo(type, parentTournament._id).subscribe(childTournament => {
       this._tournament = this._tournamentFactory.createTournament(parentTournament, childTournament, type);
 
-      
-      console.log(this._tournament);
-
       if (this._tournament.getTeams().length != 0) {
         this._standings = this._tournament.getStandings();
-        console.log(this._tournament.getTeams());
       }
 
       if (this._tournament.getRegistrationType() == RegistrationType.SIGNUP) {
         if (this._tournament.getCompetitorType() == CompetitorType.TEAM) {
           
           this._tournamentService.getTeamsAndPlayers(this._tournament.getId()).subscribe(teams => {
-            console.log('dddd');
             this._teams = teams;
-            console.log(this._teams);
             if (this._auth.authenticated()) {
               if(!this.checkIfInTournamentTeams()) {
                 this._teamService.getOwnedTeams(this._profile._id).subscribe(teams => {
@@ -98,7 +92,6 @@ export class TournamentComponent implements OnInit {
         } else if (this._tournament.getCompetitorType() == CompetitorType.USER) {
           this._tournamentService.getPlayers(this._tournament.getId()).subscribe(players => {
             this._players = players;
-            console.log(this._players);
             if (this._auth.authenticated()) {
               this.checkIfInTournamentUsers();
             }
@@ -109,7 +102,6 @@ export class TournamentComponent implements OnInit {
       if(this._tournament.getStarted()) {
         this._tournamentService.getMatches(this._tournament.getId()).subscribe(result => {
           this._matches = result.matches;
-          console.log(this._matches);
         })
       }
     });
@@ -120,7 +112,6 @@ export class TournamentComponent implements OnInit {
       for (let l = 0; l < this._teams[i].members.length; l++) {
         if (this._teams[i].members[l].id == this._profile._id) {
           this._myTeam = this._teams[i];
-          console.log(this._myTeam);
           this._inTournament = true;
           this.checkIfTeamOwner();
           break;
@@ -133,7 +124,6 @@ export class TournamentComponent implements OnInit {
     for (let i = 0; i < this._players.length; i++) {
       if (this._players[i]._id == this._profile._id) {
         this._inTournament = true;
-        console.log(this._inTournament);
         break;
       }
     }
@@ -145,7 +135,6 @@ export class TournamentComponent implements OnInit {
       this._profile._id,
       this._user.username,
       this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType())).subscribe(result => {
-        console.log(result);
         location.reload();
       })
   }
@@ -157,7 +146,6 @@ export class TournamentComponent implements OnInit {
       this._selectedOwnedTeam.id,
       this._selectedOwnedTeam.name,
       this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType())).subscribe(result => {
-        console.log(result);
         location.reload();
       })
     } else {
@@ -171,13 +159,8 @@ export class TournamentComponent implements OnInit {
       this._enumConverter.competitorTypeToString(this._tournament.getCompetitorType()), 
       this._tournament.getType(),
       id).subscribe(result => {
-        console.log(result);
         location.reload();
       })
-  }
-
-  test() {
-    console.log(this._selectedOwnedTeam);
   }
 
   checkIfTeamOwner() {

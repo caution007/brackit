@@ -17,6 +17,7 @@ export class CreateTeamComponent implements OnInit {
   private _name;
   private _joinPassword;
   private _owner;
+  private _message = [false, 'Please fill in the form.']
 
   private _createTeamSub;
 
@@ -35,14 +36,18 @@ export class CreateTeamComponent implements OnInit {
   }
 
   createTeam() {
-    let team = {name: this._name, joinPassword: this._joinPassword, owner: this._owner, ownerName: this._user.username};
-    console.log(team);
-
-    this._createTeamSub = this._teamService.createteam(team).subscribe(result => {
-      if (result.status == 'success') {
+    if (this._name && this._joinPassword) {
+      let team = {name: this._name, joinPassword: this._joinPassword, owner: this._owner, ownerName: this._user.username};
+    
+      this._createTeamSub = this._teamService.createteam(team).subscribe(result => {
+        if (result.status == 'success') {
           this._createTeamSub.unsubscribe();
         }
-    })
+        location.reload();
+      })
+    } else {
+      this._message[0] = true;
+    }
   }
 
   generatePassword() {
